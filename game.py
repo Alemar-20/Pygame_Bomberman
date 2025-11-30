@@ -17,9 +17,12 @@ class Game:
     self.PLAYER = Character(self,self.ASSETS.player_char)
 
     # Groups
-    self.hard_blocks = pygame.sprite.Group()
-    self.soft_block = pygame.sprite.Group()
-
+    # self.hard_blocks = pygame.sprite.Group()
+    # self.soft_block = pygame.sprite.Group()
+    self.groups = {
+      "hard_blocks": pygame.sprite.Group(),
+      "soft_block": pygame.sprite.Group(),
+      "player": pygame.sprite.Group()  }
     # Level Information
     self.level = 1
     self.level_matrix = self.generate_level_matrix(gs.ROWS,gs.COLS)
