@@ -79,6 +79,7 @@ class Character(pygame.sprite.Sprite):
             self.anim_time_set = pygame.time.get_ticks()
 
     def move(self,action):
+       
 
         if not self.alive:
             return
@@ -113,56 +114,61 @@ class Character(pygame.sprite.Sprite):
             self.y = old_y
             self.rect.topleft = (self.x + offset,  self.y + offset) # Reset rect to old safe spot
 
-        self.animate(action)            
-
-
-
-        # """Handle the movement and animation of the character"""
-        # # If player not alive, do not move
+        self.animate(action)   
+        # 
+        #          
+        #  """Handle the movement and animation of the character"""
+        #     # If player not alive, do not move
         # if not self.alive:
-        #     return
-        
-        # # Check if the action is different to the current self.action, reset the index num to 0 
+        #         return
+            
+        #     # Check if the action is different to the current self.action, reset the index num to 0 
         # if action != self.action:
-        #     self.action = action
-        #     self.index = 0
-        # # Define movement direction and speed    
+        #         self.action = action
+        #         self.index = 0
+        #     # Define movement direction and speed    
         # direction = {"walk_left": -self.speed, "walk_right": self.speed, "walk_up": -self.speed, "walk_down": self.speed}
 
-        # # Change the player x and y coords based on the action argument
+        #     # Change the player x and y coords based on the action argument
         # if action == "walk_left" or action == "walk_right":
-        #     self.x += direction[action]
+        #         self.x += direction[action]
         # elif action == "walk_up" or action == "walk_down":
-        #     self.y += direction[action]
+        #         self.y += direction[action]
 
-        # # Call the animation method
+        #     # Call the animation method
         # self.animate(action)
 
-        # # Update the player rectangle
+        #     # Update the player rectangle
         # self.rect.topleft = (self.x, self.y)
 
 
+
+       
+
+
         # Check for collision between player and variius items
-        # for item in self.GAME.groups["hard_block"]:
-        #     if self.rect.colliderect(item) and item.passable == False:
-        #         if self.action == "walk_right":
-        #             if self.rect.right > item.rect.left:
-        #                 self.rect.right = item.rect.left
-        #                 self.x, self.y = self.rect.topleft
-        #                 return
-        #             if self.action == "walk_left":
-        #                 if self.rect.left < item.rect.right:
-        #                     self.rect.right  = item.rect.right
-        #                     self.x, self.y = self.rect.topleft
-        #                     return
-        #             if self.action == "walk_up":
-        #                 if self.rect.top < item.rect.bottom:
-        #                     self.rect.top = item.rect.bottom
-        #                     self.x, self.y == self.rect.topleft
-        #             if self.action == "walk_down":
-        #                 if self.rect.bottom > item.rect.top:
-        #                     self.rect.bottom = item.rect.top
-        #                     self.x, self.y = self.rect.topleft
-        #                     return
+    #     self.collision_detection_items(self.GAME.groups["hard_block"])
                                 
                             
+    # def collision_detection_items(self,item_list):
+    #      for item in item_list:
+    #         if self.rect.colliderect(item) and item.passable == False:
+    #             if self.action == "walk_right":
+    #                 if self.rect.right > item.rect.left:
+    #                     self.rect.right = item.rect.left
+    #                     self.x, self.y = self.rect.topleft
+    #                     return
+    #                 if self.action == "walk_left":
+    #                     if self.rect.left < item.rect.right:
+    #                         self.rect.right  = item.rect.right
+    #                         self.x, self.y = self.rect.topleft
+    #                         return
+    #                 if self.action == "walk_up":
+    #                     if self.rect.top < item.rect.bottom:
+    #                         self.rect.top = item.rect.bottom
+    #                         self.x, self.y == self.rect.topleft
+    #                 if self.action == "walk_down":
+    #                     if self.rect.bottom > item.rect.top:
+    #                         self.rect.bottom = item.rect.top
+    #                         self.x, self.y = self.rect.topleft
+    #                         return
