@@ -77,29 +77,65 @@ class Character(pygame.sprite.Sprite):
             self.anim_time_set = pygame.time.get_ticks()
 
     def move(self,action):
-        """Handle the movement and animation of the character"""
-        # If player not alive, do not move
+
         if not self.alive:
             return
         
-        # Check if the action is different to the current self.action, reset the index num to 0 
         if action != self.action:
             self.action = action
             self.index = 0
-        # Define movement direction and speed    
-        direction = {"walk_left": -self.speed, "walk_right": self.speed, "walk_up": -self.speed, "walk_down": self.speed}
 
-        # Change the player x and y coords based on the action argument
-        if action == "walk_left" or action == "walk_right":
+        old_x = self.x
+        old_y = self.y
+
+        direction = {
+            "walk_left": -self.speed, 
+            "walk_right": self.speed, 
+            "walk_up": -self.speed, 
+            "walk_down": self.speed
+        }
+
+        if action in ["walk_left", "walk_right"]:
             self.x += direction[action]
-        elif action == "walk_up" or action == "walk_down":
-            self.y += direction[action]
+        elif action in ["walk_up", "walk_down"]:
+            self.y += direction[action]        
 
-        # Call the animation method
-        self.animate(action)
+        self.rect.topleft = (self.x, self.y)        
+        hit_hard = pygame.sprite.spritecollideany(self, self.GAME.groups["hard_block"])
+        hit_soft = pygame.sprite.spritecollideany(self, self.GAME.groups["soft_block"])   
 
-        # Update the player rectangle
-        self.rect.topleft = (self.x, self.y)
+        if hit_hard or hit_soft:
+            self.x = old_x
+            self.y = old_y
+            self.rect.topleft = (self.x, self.y) # Reset rect to old safe spot
+
+        self.animate(action)            
+
+
+
+        # """Handle the movement and animation of the character"""
+        # # If player not alive, do not move
+        # if not self.alive:
+        #     return
+        
+        # # Check if the action is different to the current self.action, reset the index num to 0 
+        # if action != self.action:
+        #     self.action = action
+        #     self.index = 0
+        # # Define movement direction and speed    
+        # direction = {"walk_left": -self.speed, "walk_right": self.speed, "walk_up": -self.speed, "walk_down": self.speed}
+
+        # # Change the player x and y coords based on the action argument
+        # if action == "walk_left" or action == "walk_right":
+        #     self.x += direction[action]
+        # elif action == "walk_up" or action == "walk_down":
+        #     self.y += direction[action]
+
+        # # Call the animation method
+        # self.animate(action)
+
+        # # Update the player rectangle
+        # self.rect.topleft = (self.x, self.y)
 
 
         # Check for collision between player and variius items
