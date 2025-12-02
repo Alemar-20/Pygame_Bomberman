@@ -129,3 +129,5 @@ class Character(pygame.sprite.Sprite):
                 self.y = self.y - y_post
             if y_post >= 52:
                 self.y = self.y + (gs.SIZE - y_post)                    
+
+
