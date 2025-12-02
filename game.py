@@ -14,16 +14,20 @@ class Game:
     self.ASSETS = assets
 
     # Player Character 
-    self.PLAYER = Character(self,self.ASSETS.player_char)
+    #self.PLAYER = Character(self,self.ASSETS.player_char)
 
     # Groups
-    self.hard_blocks = pygame.sprite.Group()
-    self.soft_block = pygame.sprite.Group()
-    # self.groups = {
-    #   "hard_blocks": pygame.sprite.Group(),
-    #   "soft_block": pygame.sprite.Group(),
-    #   "player": pygame.sprite.Group()  }
-    # Level Information
+    # self.hard_blocks = pygame.sprite.Group()
+    # self.soft_block = pygame.sprite.Group()
+    self.groups = {
+      "hard_blocks": pygame.sprite.Group(),
+      "soft_block": pygame.sprite.Group(),
+      "player": pygame.sprite.Group()  }
+    
+    # Player Character 
+    self.PLAYER = Character(self,self.ASSETS.player_char, self.groups["player"],3,2,gs.SIZE)
+    
+    #Level Information
     self.level = 1
     self.level_matrix = self.generate_level_matrix(gs.ROWS,gs.COLS)
 
@@ -31,10 +35,12 @@ class Game:
     self.PLAYER.input()
 
   def update(self):
-    self.hard_blocks.update()
-    self.soft_block.update()
-    self.PLAYER.update()
-
+    # self.hard_blocks.update()
+    # self.soft_block.update()
+    # self.PLAYER.update()
+    for value in self.groups.values():
+      for item in value:
+        item.update()
 
   def draw(self,window):
     #Draw the Green Background squares
@@ -54,9 +60,14 @@ class Game:
                   (col_num * gs.SIZE, (row_num * gs.SIZE) + gs.Y_OFFSET))                
 
 
-    self.hard_blocks.draw(window)
-    self.soft_block.draw(window)
-    self.PLAYER.draw(window)
+    # self.hard_blocks.draw(window)
+    # self.soft_block.draw(window)
+    # self.PLAYER.draw(window)
+    for value in self.groups.values():
+      for item in value:
+        item.draw(window)
+
+
 
   def generate_level_matrix(self,rows,cols):
     """Generate the basic level matrix"""
@@ -89,7 +100,7 @@ class Game:
                (row_num % 2 == 0 and col_num % 2 == 0):
            matrix[row_num][col_num] = Hard_block(self,
                                               self.ASSETS.hard_block["hard_block"],
-                                              self.hard_blocks,
+                                              self.groups["hard_block"],
                                               row_num, col_num)
     return
   
@@ -108,7 +119,7 @@ class Game:
            cell = choice(["@","_","_","_"])
            if cell == "@":
              cell = Soft_Block(self,self.ASSETS.soft_block["soft_block"],
-                               self.soft_block,row_num,col_num,)
+                               self.groups["soft_block"],row_num,col_num,)
            matrix[row_num][col_num] = cell
     return     
     # for row_num, row in enumerate(matrix):

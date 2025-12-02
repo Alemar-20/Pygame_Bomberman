@@ -3,13 +3,20 @@ import pygame
 import gamesetting as gs
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, game,image_dict):
-        super().__init__()
+    def __init__(self, game,image_dict, group, row_num, col_num, size):
+        super().__init__(group)
         self.GAME = game
 
+        # Level matrix position
+        self.row_num = row_num
+        self.col_num = col_num
+        self.size = size
+
+
+
         # CHARACTER POSITION
-        self.x = 0
-        self.y = 0
+        self.x = self.col_num * self.size 
+        self.y = (self.row_num * self.size) + gs.Y_OFFSET
 
         # CHARACTER ATTRIBUTES 
         self.alive = True
