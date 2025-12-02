@@ -31,7 +31,9 @@ class Character(pygame.sprite.Sprite):
         self.anim_time_set = pygame.time.get_ticks()
         self.image_dict = image_dict
         self.image = self.image_dict[self.action][self.index]
+
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
+        self.rect.inflate_ip(-20,-20)
 
     def input(self):
         for event in pygame.event.get():
@@ -56,13 +58,13 @@ class Character(pygame.sprite.Sprite):
 
 
         # UPDATE THE CHARACTER POSITION
-        self.rect.topleft = (self.x, self.y)          
+        #self.rect.topleft = (self.x, self.y)          
 
     def update(self):
         pass
 
     def draw(self, window):
-        window.blit(self.image, self.rect)
+        window.blit(self.image, (self.x, self.y))
         pygame.draw.rect(window, gs.RED, self.rect, 1)
 
     def animate(self,action):
@@ -100,14 +102,16 @@ class Character(pygame.sprite.Sprite):
         elif action in ["walk_up", "walk_down"]:
             self.y += direction[action]        
 
-        self.rect.topleft = (self.x, self.y)        
+        offset = 10
+        self.rect.topleft = (self.x + offset, self.y + offset)
+
         hit_hard = pygame.sprite.spritecollideany(self, self.GAME.groups["hard_block"])
         hit_soft = pygame.sprite.spritecollideany(self, self.GAME.groups["soft_block"])   
 
         if hit_hard or hit_soft:
             self.x = old_x
             self.y = old_y
-            self.rect.topleft = (self.x, self.y) # Reset rect to old safe spot
+            self.rect.topleft = (self.x + offset,  self.y + offset) # Reset rect to old safe spot
 
         self.animate(action)            
 
