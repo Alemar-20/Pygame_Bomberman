@@ -27,8 +27,9 @@ class Game:
     # Player Character 
     self.PLAYER = Character(self,self.ASSETS.player_char, self.groups["player"],3,2,gs.SIZE)
 
-    # Camera horizontal offset (in pixels)
+    # Camera offsets (in pixels)
     self.x_camera_offset = 0
+    self.y_camera_offset = 0
     
     #Level Information
     self.level = 1
@@ -45,19 +46,34 @@ class Game:
       for item in value:
         item.update()
 
-  def update_x_camera_offset_player_position(self, centerx):
-    """Update the horizontal camera offset so the player stays near screen center."""
+  def update_camera(self, centerx, centery):
+    """Update camera offsets so the player stays near screen center (both axes)."""
     total_map_width = gs.COLS * gs.SIZE
-    half_screen = gs.SCREENWIDTH // 2
-    # Desired camera offset so player's center is centered on screen
-    desired_offset = centerx - half_screen
+    total_map_height = gs.ROWS * gs.SIZE
+
+    half_screen_w = gs.SCREENWIDTH // 2
+    half_screen_h = gs.SCREENHEIGHT // 2
+
+    # Desired offsets so player's center is centered on screen
+    desired_x = centerx - half_screen_w
+    desired_y = (centery - half_screen_h) - gs.Y_OFFSET
+
     # Clamp to valid range
-    max_offset = max(0, total_map_width - gs.SCREENWIDTH)
-    if desired_offset < 0:
-      desired_offset = 0
-    if desired_offset > max_offset:
-      desired_offset = max_offset
-    self.x_camera_offset = int(desired_offset)
+    max_x = max(0, total_map_width - gs.SCREENWIDTH)
+    max_y = max(0, total_map_height - gs.SCREENHEIGHT)
+
+    if desired_x < 0:
+      desired_x = 0
+    if desired_x > max_x:
+      desired_x = max_x
+
+    if desired_y < 0:
+      desired_y = 0
+    if desired_y > max_y:
+      desired_y = max_y
+
+    self.x_camera_offset = int(desired_x)
+    self.y_camera_offset = int(desired_y)
 
   def draw(self,window):
     #Draw the Green Background squares
@@ -70,27 +86,30 @@ class Game:
     window.fill(gs.GREY)
     #This is from gemini as a test
 
-    # Apply camera offset to background tiles
-    cam = getattr(self, 'x_camera_offset', 0)
+    # Apply camera offsets to background tiles
+    cam_x = getattr(self, 'x_camera_offset', 0)
+    cam_y = getattr(self, 'y_camera_offset', 0)
     for row_num, row in enumerate(self.level_matrix): 
       for col_num, cell in enumerate(row): 
       # Now it unpacks correctly: col_num gets the index, 'cell' gets the value ("_" or "@")
        window.blit(self.ASSETS.background["background"][0],
-                  ((col_num * gs.SIZE) - cam, (row_num * gs.SIZE) + gs.Y_OFFSET))                
+                  ((col_num * gs.SIZE) - cam_x, (row_num * gs.SIZE) + gs.Y_OFFSET - cam_y))                
 
 
     # self.hard_blocks.draw(window)
     # self.soft_block.draw(window)
     # self.PLAYER.draw(window)
-    # Draw all sprite groups, passing the camera offset so sprites can be shifted
+    # Draw all sprite groups, passing the camera offsets so sprites shift properly
     for value in self.groups.values():
       for item in value:
-        # Call draw with cam (sprites will accept offset optionally)
         try:
-          item.draw(window, cam)
+          item.draw(window, cam_x, cam_y)
         except TypeError:
-          # Fallback: if an object expects no offset, call without it
-          item.draw(window)
+          # Fallback: if an object expects a single offset value or none, try alternatives
+          try:
+            item.draw(window, cam_x)
+          except TypeError:
+            item.draw(window)
 
 
 

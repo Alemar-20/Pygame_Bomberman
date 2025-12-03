@@ -64,10 +64,9 @@ class Character(pygame.sprite.Sprite):
     def update(self):
         pass
 
-    def draw(self, window, offset=0):
-        # `offset` is optional to keep compatibility with other objects
-        # that are drawn without camera offset. Default is 0 (no offset).
-        window.blit(self.image, (self.x - offset, self.y - offset))
+    def draw(self, window, x_offset=0, y_offset=0):
+        # Draw the character shifted by the camera offsets (x,y).
+        window.blit(self.image, (self.x - x_offset, self.y - y_offset))
         #pygame.draw.rect(window, gs.RED, self.rect, 1)
 
         # Optional: Uncomment to see the red hitbox for debugging
@@ -145,5 +144,5 @@ class Character(pygame.sprite.Sprite):
         # --- FINAL UPDATES ---
         self.animate(action)   
         
-        # Update Camera based on the center of the player
-        self.GAME.update_x_camera_offset_player_position(self.rect.centerx)                 
+        # Update camera based on the center of the player (x and y)
+        self.GAME.update_camera(self.rect.centerx, self.rect.centery)

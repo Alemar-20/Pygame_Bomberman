@@ -24,7 +24,7 @@ class Blocks(pygame.sprite.Sprite):
     self.y = (self.row * self.size) + self.y_offset
 
     # Atrributes
-    self.passable = False   #False ang default nito!
+    self.passable = True   #False ang default nito!
 
 
     # BLOCK DISPLAY
@@ -36,9 +36,9 @@ class Blocks(pygame.sprite.Sprite):
   def update(self):
     pass
 
-  def draw(self, window, offset=0):
-    # Draw block shifted by horizontal camera offset
-    window.blit(self.image, (self.x - offset, self.y))
+  def draw(self, window, x_offset=0, y_offset=0):
+    # Draw block shifted by camera offsets
+    window.blit(self.image, (self.x - x_offset, self.y - y_offset))
 
   def __repr__(self):
     return "'#'"

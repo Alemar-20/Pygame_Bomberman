@@ -22,8 +22,10 @@ TILE_HEIGHT = 32
 
 # GAME MATRIX 
 SIZE = 64  # SIZE OF EACH TILE IN PIXELS
-ROWS = 13
-COLS = 21
+# Increase the level size so the world is larger than the screen
+# This allows the camera to scroll when the player moves around
+ROWS = 20
+COLS = 40
 
 
 # COLOURS
