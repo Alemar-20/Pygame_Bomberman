@@ -1,7 +1,8 @@
 #This is gamesetting.py - contains global settings for the Bomberman game
 
-SCREENWIDTH = 1343         #1343
-SCREENHEIGHT = 832
+# A common, game-friendly default resolution that fits most laptops nicely
+SCREENWIDTH = 1280
+SCREENHEIGHT = 720
 
 
 

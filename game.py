@@ -27,17 +27,26 @@ class Game:
     # Player Character 
     self.PLAYER = Character(self,self.ASSETS.player_char, self.groups["player"],3,2,gs.SIZE)
 
-    # Camera offsets (in pixels)
+    # Camera offsets (current and target) and smoothing
     self.x_camera_offset = 0
     self.y_camera_offset = 0
+    self.cam_target_x = 0
+    self.cam_target_y = 0
+    # How quickly the camera follows the target (0..1). Lower = smoother/slower.
+    self.camera_lerp = 0.14
+    # Deadzone ratio: fraction of the screen width/height that forms the central area
+    # where the player can move without moving the camera. 0.6 means 60% of the
+    # screen is the deadzone; camera moves only when player leaves that area.
+    self.deadzone_ratio = 0.6
     
     #Level Information
     self.level = 1
     self.level_matrix = self.generate_level_matrix(gs.ROWS,gs.COLS)
 
-  def input(self):
-    self.PLAYER.input()
-
+  def input(self, events):
+    # Expect an events list forwarded from main
+    self.PLAYER.input(events)
+    
   def update(self):
     # self.hard_blocks.update()
     # self.soft_block.update()
@@ -46,21 +55,55 @@ class Game:
       for item in value:
         item.update()
 
+    # Smoothly interpolate camera current offsets toward target offsets
+    dx = self.cam_target_x - self.x_camera_offset
+    dy = self.cam_target_y - self.y_camera_offset
+    self.x_camera_offset += dx * self.camera_lerp
+    self.y_camera_offset += dy * self.camera_lerp
+
   def update_camera(self, centerx, centery):
     """Update camera offsets so the player stays near screen center (both axes)."""
     total_map_width = gs.COLS * gs.SIZE
     total_map_height = gs.ROWS * gs.SIZE
 
-    half_screen_w = gs.SCREENWIDTH // 2
-    half_screen_h = gs.SCREENHEIGHT // 2
+    # Use current window size so camera adapts to any screen/device
+    screen_w = self.MAIN.screen.get_width()
+    screen_h = self.MAIN.screen.get_height()
+    half_screen_w = screen_w // 2
+    half_screen_h = screen_h // 2
 
-    # Desired offsets so player's center is centered on screen
-    desired_x = centerx - half_screen_w
-    desired_y = (centery - half_screen_h) - gs.Y_OFFSET
+    # Deadzone dimensions (centered). Player can move inside this rect without
+    # moving the camera. Only when the player leaves it will we update camera target.
+    dz_w = int(screen_w * self.deadzone_ratio)
+    dz_h = int(screen_h * self.deadzone_ratio)
+    dz_left = (screen_w - dz_w) / 2
+    dz_right = dz_left + dz_w
+    dz_top = (screen_h - dz_h) / 2
+    dz_bottom = dz_top + dz_h
 
-    # Clamp to valid range
-    max_x = max(0, total_map_width - gs.SCREENWIDTH)
-    max_y = max(0, total_map_height - gs.SCREENHEIGHT)
+    # Player position relative to current camera target (screen coordinates)
+    player_screen_x = centerx - self.cam_target_x
+    player_screen_y = centery - self.cam_target_y
+
+    # Determine desired_x only if player leaves deadzone horizontally
+    if player_screen_x < dz_left:
+      desired_x = centerx - dz_left
+    elif player_screen_x > dz_right:
+      desired_x = centerx - dz_right
+    else:
+      desired_x = self.cam_target_x
+
+    # Determine desired_y only if player leaves deadzone vertically
+    if player_screen_y < dz_top:
+      desired_y = centery - dz_top
+    elif player_screen_y > dz_bottom:
+      desired_y = centery - dz_bottom
+    else:
+      desired_y = self.cam_target_y
+
+    # Clamp to valid range based on map size and current screen size
+    max_x = max(0, total_map_width - screen_w)
+    max_y = max(0, total_map_height - screen_h)
 
     if desired_x < 0:
       desired_x = 0
@@ -72,8 +115,9 @@ class Game:
     if desired_y > max_y:
       desired_y = max_y
 
-    self.x_camera_offset = int(desired_x)
-    self.y_camera_offset = int(desired_y)
+    # Round targets to integer pixels to avoid half-tile cutoffs at edges
+    self.cam_target_x = float(round(desired_x))
+    self.cam_target_y = float(round(desired_y))
 
   def draw(self,window):
     #Draw the Green Background squares
@@ -87,13 +131,14 @@ class Game:
     #This is from gemini as a test
 
     # Apply camera offsets to background tiles
-    cam_x = getattr(self, 'x_camera_offset', 0)
-    cam_y = getattr(self, 'y_camera_offset', 0)
+    # Use integer offsets for drawing to prevent half-pixel tile cutoffs
+    cam_x = int(round(getattr(self, 'x_camera_offset', 0)))
+    cam_y = int(round(getattr(self, 'y_camera_offset', 0)))
     for row_num, row in enumerate(self.level_matrix): 
       for col_num, cell in enumerate(row): 
-      # Now it unpacks correctly: col_num gets the index, 'cell' gets the value ("_" or "@")
-       window.blit(self.ASSETS.background["background"][0],
-                  ((col_num * gs.SIZE) - cam_x, (row_num * gs.SIZE) + gs.Y_OFFSET - cam_y))                
+        # Now it unpacks correctly: col_num gets the index, 'cell' gets the value ("_" or "@")
+        window.blit(self.ASSETS.background["background"][0],
+                    ((col_num * gs.SIZE) - cam_x, (row_num * gs.SIZE) + gs.Y_OFFSET - cam_y))                
 
 
     # self.hard_blocks.draw(window)
@@ -102,10 +147,10 @@ class Game:
     # Draw all sprite groups, passing the camera offsets so sprites shift properly
     for value in self.groups.values():
       for item in value:
+        # Prefer the 2-arg (x,y) draw signature; fall back for compatibility
         try:
           item.draw(window, cam_x, cam_y)
         except TypeError:
-          # Fallback: if an object expects a single offset value or none, try alternatives
           try:
             item.draw(window, cam_x)
           except TypeError:

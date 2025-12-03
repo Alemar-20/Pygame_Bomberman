@@ -36,8 +36,9 @@ class Character(pygame.sprite.Sprite):
         # Bagong Add ito. 
         self.offset = 10
 
-    def input(self):
-        for event in pygame.event.get():
+    def input(self, events):
+        # Handle events passed down from main (quit/escape handled here as well)
+        for event in events:
             # CHECK IF RED CROSS IS CLICKED
             if event.type == pygame.QUIT:
                 self.GAME.MAIN.running = False  
@@ -45,6 +46,7 @@ class Character(pygame.sprite.Sprite):
                 if event.key == pygame.K_ESCAPE:
                     self.GAME.MAIN.running = False
 
+        # Movement keys (poll irrespective of events)
         keys_pressed = pygame.key.get_pressed() 
         if keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
             self.move("walk_right")

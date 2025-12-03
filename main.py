@@ -8,10 +8,13 @@ import gamesetting as gs # Module/file containing global game settings (screen s
 class Bomberman:
   def __init__(self):
     pygame.init()
-
     # 2. Set up the display window (the 'screen')
-    #    It uses screen dimensions defined in the gamesetting module (gs)
-    self.screen = pygame.display.set_mode((gs.SCREENWIDTH, gs.SCREENHEIGHT))
+    #    Use the configured size but clamp to the current display so it fits on any device.
+    info = pygame.display.Info()
+    screen_w = min(gs.SCREENWIDTH, info.current_w)
+    screen_h = min(gs.SCREENHEIGHT, info.current_h)
+    # Create a resizable window so players can adjust size at runtime
+    self.screen = pygame.display.set_mode((screen_w, screen_h), pygame.RESIZABLE)
 
     # 3. Set the title
     pygame.display.set_caption("Bomba~ Na!")
@@ -32,13 +35,31 @@ class Bomberman:
   def input(self):
 
     # Delegate input handling to the specific Game object (e.g., player movement, bomb dropping)
-    self.GAME.input()
+    # Poll events centrally so we can handle window resize and forward events
+    events = pygame.event.get()
+    for event in events:
+      if event.type == pygame.QUIT:
+        self.running = False
+      elif event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_ESCAPE:
+          self.running = False
+      elif event.type == pygame.VIDEORESIZE:
+        # Clamp resize to the current display resolution
+        info = pygame.display.Info()
+        new_w = min(event.w, info.current_w)
+        new_h = min(event.h, info.current_h)
+        self.screen = pygame.display.set_mode((new_w, new_h), pygame.RESIZABLE)
+
+    # Pass the event list to the Game so it can forward to the Character, etc.
+    self.GAME.input(events)
         
   # Method for updating the game state (movement, physics, collision checks, enemy AI)
   def update(self):
     # Control the frame rate to a constant value defined in gamesetting (gs.FPS)
     # This makes the game run at the same speed regardless of the computer's performance.
     self.FPS.tick(gs.FPS)
+    # Also update the Game logic (handles smoothing camera interpolation)
+    self.GAME.update()
 
   # Method for drawing all game elements to the screen
   def draw(self,window):
