@@ -24,7 +24,7 @@ class Blocks(pygame.sprite.Sprite):
     self.y = (self.row * self.size) + self.y_offset
 
     # Atrributes
-    self.passable = False
+    self.passable = False   #False ang default nito!
 
 
     # BLOCK DISPLAY
