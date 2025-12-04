@@ -37,6 +37,9 @@ class Bomberman:
     5. Initialize frame rate clock for consistent 60 FPS
     6. Set running flag to control main loop
     """
+    # 1. Initialize Pygame modules (MUST be done first before any display operations)
+    pygame.init()
+    
     # 2. Set up the display window (the 'screen')
     #    Use the configured size but clamp to the current display so it fits on any device.
     info = pygame.display.Info()

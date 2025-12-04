@@ -28,8 +28,7 @@ class Assets:
             col=gs.TILE_WIDTH, 
             width=gs.TILE_WIDTH - 1,
             height=gs.TILE_HEIGHT,
-            resize=True
-            
+            resize=True            
         )
 
         self.soft_block = self.load_sprite_range(
