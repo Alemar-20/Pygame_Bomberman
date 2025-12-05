@@ -459,13 +459,16 @@ class Explosion(pygame.sprite.Sprite):
                     # If the end of the power range, use the end piece
                     if power_cell == self.power - 1:
                         print(f"explode{dir[0], [dir[1]]}, end_piece") 
+                        FireBall(self.image_dict[dir[4]], self.GAME.groups["explosion"], dir[0], dir[1], gs.SIZE)
                     # Check if the next cell in sequence is a barrier, use end piece if true, and change valid_directions
                     # to false
                     elif self.GAME.level_matrix[dir[2]][dir[3]] in self.GAME.groups["hard_block"].sprites():
                         print(f"explode{dir[0],[dir[1]]} end_piece")
+                        FireBall(self.image_dict[dir[4]], self.GAME.groups["explosion"], dir[0], dir[1], gs.SIZE)
                         valid_directions[ind] = False
                     # If next cell in sequence is not a barrier, and not the end of the flame power, use mid image
                     else:
+                        FireBall(self.image_dict[dir[5]], self.GAME.groups["explosion"], dir[0], dir[1], gs.SIZE)
                         print(f"explode{dir[0], dir[1]}, mid flame")    
                 # if the current cell being checked is not empty, but is a bomb, detonate the bomb
                 elif self.GAME.level_matrix[dir[0]][dir[1]] in self.GAME.groups["bomb"].sprites():
@@ -499,3 +502,40 @@ class Explosion(pygame.sprite.Sprite):
               "down_end", "down_mid")
         return [left, right, up, down]      
         
+class FireBall(pygame.sprite.Sprite):
+    def __init__(self, image_list, group, row_num, col_num, size):
+        super().__init__(group)
+        self.row_num = row_num
+        self.col_num = col_num
+
+        self.size = size
+
+        # Coordinates
+        self.y = self.row_num * self.size + gs.Y_OFFSET
+        self.x = self.col_num * self.size
+
+        # Image
+        self.index = 0
+        self.anim_frame_time = 75
+        self.anim_timer = pygame.time.get_ticks()
+        self.image_list = image_list
+        self.image = self.image_list[self.index]
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+
+        self.passable = False
+
+
+    def update(self):
+        self.animate()
+
+    def draw(self, window, x_offset):
+        window.blit(self.image, (self.rect.x - x_offset, self.rect.y))        
+
+    def animate(self):
+        if pygame.time.get_ticks() - self.anim_timer >= self.anim_frame_time:
+            self.index += 1
+            if self.index == len(self.image_list):
+                self.kill()
+                return
+            self.image = self.image_list[self.index]
+            self.anim_timer = pygame.time.get_ticks()
