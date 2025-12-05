@@ -103,9 +103,9 @@ def create_row_buttons(labels, image_keys, callbacks, y=300, btn_w=180, btn_h=60
 
     return btns
 
-labels = ["START", "RESUME", "PAUSE", "EXIT"]
-image_keys = ["start_btn", "resume_btn", "pause_btn", "exit_btn"]
-callbacks = [start_game, resume_game, pause_game, exit_game]
+labels = ["START", "PAUSE", "RESUME", "EXIT"]
+image_keys = ["start_btn", "pause_btn", "resume_btn", "exit_btn"]
+callbacks = [start_game, pause_game, resume_game, exit_game]
 
 buttons = create_row_buttons(labels, image_keys, callbacks)
 
