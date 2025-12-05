@@ -18,7 +18,7 @@ import pygame
 from assets import Assets  # Class to manage all game assets (images, sounds, sprites)
 from game import Game      # Core game logic (levels, players, blocks, camera)
 import gamesetting as gs   # Global settings (screen size, FPS, colors, tile sizes, etc.)
-
+import home
 # ============================================================================
 # CLASS: Bomberman - Main game controller and window manager
 # ============================================================================
@@ -198,5 +198,6 @@ class Bomberman:
 # the script is executed directly (not imported as a module)
 if __name__ == "__main__":
   game = Bomberman()  # Create a new Bomberman game instance
+  home
   game.rungame()      # Start the main game loop
   pygame.quit()       # Clean up Pygame resources when loop exits
