@@ -87,28 +87,43 @@ HARD_BLOCK = {"hard_block":[(2,1)]} #0,1 default  #0,4
 SOFT_BLOCK = {"soft_block":[(0,7)]} #block for purple soft block [(0,7]}
 BOMB = {"bomb": [(0,0),(0,1),(0,2),(0,1),]} #(0,4),(0,5)]}  #bomb animation frames
 # OLD COORDINATES (WRONG - all pointing to same rows, no full spread):
-# EXPLOSION = {"centre":[(0,0),(0,1),(0,2),(0,1)],
-#              "left_end":[(3,0),(3,1),(3,2),(3,3)],
-#              "right_end":[(3,0),(3,1),(3,2),(3,3)],
-#              "up_end":[(4,0),(4,1),(4,2),(4,3)],
-#              "down_end":[(4,0),(4,1),(4,2),(4,3)],
-#              "left_mid":[(3,4),(3,5),(3,6),(3,7)], 
-#              "right_mid":[(3,4),(3,5),(3,6),(3,7)],
-#              "up_mid":[(4,4),(4,5),(4,6),(4,7)],
-#              "down_mid":[(4,4),(4,5),(4,6),(4,7)],
-#             }
+EXPLOSION = {"centre":[(2,7),(2,8),(2,9),(2,10)],
+             "left_end":[(3,0),(3,1),(3,2),(3,3)],
+             "right_end":[(3,0),(3,1),(3,2),(3,3)],
+             "up_end":[(4,0),(4,1),(4,2),(4,3)],
+             "down_end":[(4,0),(4,1),(4,2),(4,3)],
+             "left_mid":[(3,4),(3,5),(3,6),(3,7)], 
+             "right_mid":[(3,4),(3,5),(3,6),(3,7)],
+             "up_mid":[(4,4),(4,5),(4,6),(4,7)],
+             "down_mid":[(4,4),(4,5),(4,6),(4,7)],
+            }
+
+# DEFAULT_EXPLOSION = [(0,0), (0,1), (0,2), (0,3)]
+
+# EXPLOSION = {
+#     "centre":    DEFAULT_EXPLOSION,
+#     "left_end":  DEFAULT_EXPLOSION,
+#     "left_mid":  DEFAULT_EXPLOSION,
+#     "right_end": DEFAULT_EXPLOSION,
+#     "right_mid": DEFAULT_EXPLOSION,
+#     "up_end":    DEFAULT_EXPLOSION,
+#     "up_mid":    DEFAULT_EXPLOSION,
+#     "down_end":  DEFAULT_EXPLOSION,
+#     "down_mid":  DEFAULT_EXPLOSION,
+# }
+
 
 # NEW COORDINATES (FIXED - full cross explosion with all directions visible):
-EXPLOSION = {"centre":[(0,0),(0,1),(0,2),(0,1)],              # Center cross (row 0, cols 0-3, 4 frames)
-             "left_end":[(1,0),(1,1),(1,2),(1,3)],           # Left end (row 1, cols 0-3, 4 frames)
-             "left_mid":[(1,4),(1,5),(1,6),(1,7)],           # Left mid (row 1, cols 4-7, 4 frames)
-             "right_end":[(2,0),(2,1),(2,2),(2,3)],          # Right end (row 2, cols 0-3, 4 frames)
-             "right_mid":[(2,4),(2,5),(2,6),(2,7)],          # Right mid (row 2, cols 4-7, 4 frames)
-             "up_end":[(3,0),(3,1),(3,2),(3,3)],             # Up end (row 3, cols 0-3, 4 frames)
-             "up_mid":[(3,4),(3,5),(3,6),(3,7)],             # Up mid (row 3, cols 4-7, 4 frames)
-             "down_end":[(4,0),(4,1),(4,2),(4,3)],           # Down end (row 4, cols 0-3, 4 frames)
-             "down_mid":[(4,4),(4,5),(4,6),(4,7)],           # Down mid (row 4, cols 4-7, 4 frames)
-            }
+# EXPLOSION = {"centre":[(0,0),(0,1),(0,2),(0,1)],              # Center cross (row 0, cols 0-3, 4 frames)
+#              "left_end":[(1,0),(1,1),(1,2),(1,3)],           # Left end (row 1, cols 0-3, 4 frames)
+#              "left_mid":[(1,4),(1,5),(1,6),(1,7)],           # Left mid (row 1, cols 4-7, 4 frames)
+#              "right_end":[(2,0),(2,1),(2,2),(2,3)],          # Right end (row 2, cols 0-3, 4 frames)
+#              "right_mid":[(2,4),(2,5),(2,6),(2,7)],          # Right mid (row 2, cols 4-7, 4 frames)
+#              "up_end":[(3,0),(3,1),(3,2),(3,3)],             # Up end (row 3, cols 0-3, 4 frames)
+#              "up_mid":[(3,4),(3,5),(3,6),(3,7)],             # Up mid (row 3, cols 4-7, 4 frames)
+#              "down_end":[(4,0),(4,1),(4,2),(4,3)],           # Down end (row 4, cols 0-3, 4 frames)
+#              "down_mid":[(4,4),(4,5),(4,6),(4,7)],           # Down mid (row 4, cols 4-7, 4 frames)
+#             }
 
 # ACTUAL SPRITE SHEET (all frames in row 0):
 # [Centre][Centre][Centre][Centre][LeftExt][LeftExt][RightExt][RightExt][UpExt][UpExt][DownExt][DownExt]

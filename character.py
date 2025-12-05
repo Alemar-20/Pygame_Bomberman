@@ -382,52 +382,52 @@ class Bomb(pygame.sprite.Sprite):
     def explode(self):
         """Destroy the bomb and remove from the level matrix"""    
         self.kill()
-        
-        # OLD CODE (only created center explosion):
-        # Explosion(self.GAME, self.GAME.ASSETS.explosion, "centre", self.power, 
-        #           self.GAME.groups["explosion"], self.row, self.col, self.size)
-        
-        # NEW CODE (creates explosions in all 4 directions based on bomb power):
-        # Create center explosion at bomb position
         Explosion(self.GAME, self.GAME.ASSETS.explosion, "centre", self.power, 
                   self.GAME.groups["explosion"], self.row, self.col, self.size)
         
-        # Create explosions spreading in all 4 directions (up, down, left, right)
-        directions = [
-            ("up", -1, 0),      # (direction_name, row_delta, col_delta)
-            ("down", 1, 0),
-            ("left", 0, -1),
-            ("right", 0, 1)
-        ]
-        
-        for direction, row_delta, col_delta in directions:
-            for distance in range(1, self.power + 1):  # Spread based on bomb power
-                new_row = self.row + (row_delta * distance)
-                new_col = self.col + (col_delta * distance)
-                
-                # Check if new position is within map bounds
-                if not (0 <= new_row < len(self.GAME.level_matrix) and 
-                        0 <= new_col < len(self.GAME.level_matrix[0])):
-                    break  # Stop spreading if hit map edge
-                
-                # Stop spreading if hit a hard block
-                cell = self.GAME.level_matrix[new_row][new_col]
-                if isinstance(cell, Hard_block):
-                    break
-                
-                # Determine image type: "end" if last tile, "mid" otherwise
-                is_last_tile = (distance == self.power)
-                image_type = f"{direction}_end" if is_last_tile else f"{direction}_mid"
-                
-                # Create explosion sprite at this tile
-                Explosion(self.GAME, self.GAME.ASSETS.explosion, image_type, self.power,
-                          self.GAME.groups["explosion"], new_row, new_col, self.size)
-                
-                # Stop if hit a soft block (explosion destroys it but doesn't spread through)
-                if isinstance(cell, Soft_Block):
-                    break
-        
         self.remove_bomb_from_grid()
+        
+        # # NEW CODE (creates explosions in all 4 directions based on bomb power):
+        # # Create center explosion at bomb position
+        # Explosion(self.GAME, self.GAME.ASSETS.explosion, "centre", self.power, 
+        #           self.GAME.groups["explosion"], self.row, self.col, self.size)
+        
+        # # Create explosions spreading in all 4 directions (up, down, left, right)
+        # directions = [
+        #     ("up", -1, 0),      # (direction_name, row_delta, col_delta)
+        #     ("down", 1, 0),
+        #     ("left", 0, -1),
+        #     ("right", 0, 1)
+        # ]
+        
+        # for direction, row_delta, col_delta in directions:
+        #     for distance in range(1, self.power + 1):  # Spread based on bomb power
+        #         new_row = self.row + (row_delta * distance)
+        #         new_col = self.col + (col_delta * distance)
+                
+        #         # Check if new position is within map bounds
+        #         if not (0 <= new_row < len(self.GAME.level_matrix) and 
+        #                 0 <= new_col < len(self.GAME.level_matrix[0])):
+        #             break  # Stop spreading if hit map edge
+                
+        #         # Stop spreading if hit a hard block
+        #         cell = self.GAME.level_matrix[new_row][new_col]
+        #         if isinstance(cell, Hard_block):
+        #             break
+                
+        #         # Determine image type: "end" if last tile, "mid" otherwise
+        #         is_last_tile = (distance == self.power)
+        #         image_type = f"{direction}_end" if is_last_tile else f"{direction}_mid"
+                
+        #         # Create explosion sprite at this tile
+        #         Explosion(self.GAME, self.GAME.ASSETS.explosion, image_type, self.power,
+        #                   self.GAME.groups["explosion"], new_row, new_col, self.size)
+                
+        #         # Stop if hit a soft block (explosion destroys it but doesn't spread through)
+        #         if isinstance(cell, Soft_Block):
+                    #break
+        
+        
 
     def planted_bomb_player_collision(self):
         if not self.passable:
@@ -474,16 +474,19 @@ class Explosion(pygame.sprite.Sprite):
     def draw(self, window, x_offset=0, y_offset=0):
         """
         DRAW - Render the explosion sprite with camera offsets applied.
-        
+
         PARAMETERS:
         - window: pygame.Surface to draw on
         - x_offset: horizontal camera offset (defaults to 0)
         - y_offset: vertical camera offset (defaults to 0)
-        
-        FIX: Now accepts BOTH x and y offsets (matching Character and Bomb signatures).
-        Uses stored world coordinates (self.x, self.y) to stay fixed on the map
-        even as the camera scrolls.
+
+        This uses the stored world coordinates (`self.x`, `self.y`) and subtracts
+        the camera offsets so the explosion stays fixed in the world while the
+        camera moves. Matching the `draw(window, cam_x, cam_y)` signature used in
+        `Game.draw()` prevents TypeError fallbacks and ensures both axes are
+        handled correctly.
         """
+        # Use world coordinates and apply both camera offsets (cast to int for blit)
         window.blit(self.image, (int(self.x) - int(x_offset), int(self.y) - int(y_offset)))
 
     def animate(self):

@@ -52,15 +52,15 @@ class Assets:
             resize=True            
         )
 
-        self.sprite_sheet = self.load_sprite_sheet("images", "bombFire.png")# THIS IS FOR EXPLOSION
+        self.sprite_sheet = self.load_sprite_sheet("images", "spritesheet.png")# THIS IS FOR EXPLOSION
         self.explosion = self.load_sprite_range(
-            gs.EXPLOSION, # Use the coordinates defined in gamesetting  
-            self.sprite_sheet, # Use the same sprite sheet
-            row=gs.TILE_HEIGHT, 
-            col=gs.TILE_WIDTH, 
-            width=gs.TILE_WIDTH - 1,
-            height=gs.TILE_HEIGHT,
-            resize=True            
+            gs.EXPLOSION, 
+            self.sprite_sheet, 
+            row=16,          # Source Row Height (16px)
+            col=16,          # Source Column Width (16px)
+            width=16,        # Width of the image to cut (16px)
+            height=16,       # Height of the image to cut (16px)
+            resize=True      # This will scale it up to 64x64 for the game
         )
 
         for image_list in ["right_end", "right_mid", "down_end", "down_mid"]: 
