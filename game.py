@@ -159,7 +159,7 @@ class Game:
     #                 (col_num * gs.SIZE, (row_num * gs.SIZE) + gs.Y_OFFSET))
 
     #Fill the background entirely
-    window.fill(gs.GREY)
+    window.fill(gs.PURPLEISH)
     #This is from gemini as a test
 
     # Apply camera offsets to background tiles

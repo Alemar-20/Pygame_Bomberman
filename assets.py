@@ -26,7 +26,7 @@ class Assets:
             self.sprite_sheet, 
             row=gs.TILE_HEIGHT, 
             col=gs.TILE_WIDTH, 
-            width=gs.TILE_WIDTH - 1,
+            width=gs.TILE_WIDTH, #may - 1 to 
             height=gs.TILE_HEIGHT,
             resize=True            
         )
@@ -36,7 +36,7 @@ class Assets:
             self.sprite_sheet, # Use the same sprite sheet
             row=gs.TILE_HEIGHT, 
             col=gs.TILE_WIDTH, 
-            width=gs.TILE_WIDTH - 1,
+            width=gs.TILE_WIDTH, #may - 1 din
             height=gs.TILE_HEIGHT,
             resize=True            
         )
@@ -47,10 +47,14 @@ class Assets:
             self.sprite_sheet, # Use the same sprite sheet
             row=gs.TILE_HEIGHT, 
             col=gs.TILE_WIDTH, 
-            width=gs.TILE_WIDTH - 1,
+            width=gs.TILE_WIDTH , #may - 1 din
             height=gs.TILE_HEIGHT,
             resize=True            
         )
+
+
+
+
 
         self.sprite_sheet = self.load_sprite_sheet("images", "spritesheet.png")# THIS IS FOR EXPLOSION
         self.explosion = self.load_sprite_range(

@@ -124,6 +124,16 @@ class Soft_Block(Blocks):
   """
   def __init__ (self,game,images,group,row_num, col_num):
         super().__init__(game, images, group, row_num, col_num)
+        self.anim_timer = pygame.time.get_ticks()  # Animation timer (if needed in future)
+        self.anim_frame_time = 50
+
+        self.destroyed = False
+
+
+  def update(self):
+    # if self.destroyed:
+    #   if pygame.time.get_ticks() -       
+    pass
 
   def __repr__(self):
     return "'@'"
