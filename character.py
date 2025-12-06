@@ -438,6 +438,7 @@ class Explosion(pygame.sprite.Sprite):
         self.passable = False
         self.calculate_explosion_path()
 
+
     def update(self):
         self.animate()
     

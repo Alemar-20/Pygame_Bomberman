@@ -1,6 +1,7 @@
 #This is game.py - the main game logic for Bomberman
 import pygame
 from character import Character
+from enemy import Enemy
 from blocks import Hard_block, Soft_Block
 from random import choice
 import gamesetting as gs
@@ -47,11 +48,13 @@ class Game:
       "soft_block": pygame.sprite.Group(),    # Destructible blocks
       "bomb": pygame.sprite.Group(),          # Bombs placed by player
       "explosion": pygame.sprite.Group(),     # Explosion effects
+      "enemies": pygame.sprite.Group(),      # Enemy characters
       "player": pygame.sprite.Group()         # Player character
     }
     
     # Create player character at starting position (grid: row 3, col 2)
     self.PLAYER = Character(self, self.ASSETS.player_char, self.groups["player"], 3, 2, gs.SIZE)
+    self.ballom_enemy = Enemy(self,self.ASSETS.ballom, self.groups["enemies"],5,5,gs.SIZE)
 
     # CAMERA SYSTEM - Smooth following with deadzone
     # Current camera offsets (in pixels) - what's actually rendered

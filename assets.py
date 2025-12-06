@@ -66,6 +66,16 @@ class Assets:
 
         for image_list in ["right_end", "right_mid", "down_end", "down_mid"]: 
             self.rotate_images_in_list(self.explosion[image_list], 180) 
+        self.ballom = self.load_sprite_range(
+            gs.BALLOM, 
+            self.sprite_sheet,
+            row=16,
+            col=16,
+            width=16,
+            height=16,
+            resize=True
+        )    
+    
 
     
 
