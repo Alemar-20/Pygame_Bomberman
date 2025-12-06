@@ -89,6 +89,21 @@ class Game:
     for value in self.groups.values():
       for item in value:
         item.update()
+    # Perform enemy collision check with explosions, only if there is an explosion
+    if self.groups["explosion"]:
+      # Compare explosion group with the enemies group, check for collision. This will retrun a dictionary
+      # keys: group 1, values: list of all group 2 that collision detection occurs
+      killed_enemies = pygame.sprite.groupcollide(self.groups["explosion"],
+                                                   self.groups["enemies"], False, False)
+      if killed_enemies:
+         # Cycle through the dictionary, performing checks on each enemy colliding with a flame
+         for flame, enemies in killed_enemies.items():
+           # Cycle through each enemy in the dictionary value list
+           for enemy in enemies:
+             if pygame.sprite.collide_mask(flame,enemy):
+               enemy.destroy()
+               
+
 
     # Smoothly interpolate camera current offsets toward target offsets
     dx = self.cam_target_x - self.x_camera_offset
