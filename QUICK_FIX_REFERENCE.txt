@@ -1,0 +1,49 @@
+# Quick Fix Summary: Cannot Plant Bomb After Explosion
+
+## The Bug (1 Sentence)
+**`remove_bomb_from_grid()` increments the bomb counter instead of decrementing it, so after the first bomb explodes, the counter is too high and new bombs cannot be planted.**
+
+---
+
+## Root Cause (3 Steps)
+
+1. **Plant Bomb:** `bomb_planted += 1` → goes from 0 to 1 ✅
+2. **Explode Bomb:** `bomb_planted += 1` → goes from 1 to 2 ❌ (should be 0!)
+3. **Try Plant Again:** Check `bomb_planted < bomb_limit` → `2 < 1` = FALSE ❌
+
+---
+
+## The Fix (1 Line)
+
+**File:** `character.py` → `Bomb.remove_bomb_from_grid()`
+
+```python
+# OLD (WRONG):
+self.GAME.PLAYER.bomb_planted += 1
+
+# NEW (FIXED):
+self.GAME.PLAYER.bomb_planted -= 1
+```
+
+**What Changed:** `+=` becomes `-=`
+
+---
+
+## Why It Works
+
+- **Insert bomb:** +1 (increase counter when bomb placed)
+- **Remove bomb:** -1 (decrease counter when bomb removed)
+- **Result:** Counter cycles 0 → 1 → 0 → 1 correctly
+
+---
+
+## Test It
+```
+1. Plant bomb (SPACE) → Bomb appears
+2. Explode bomb (LEFT CTRL) → Explosion appears
+3. Plant new bomb (SPACE) → Should work now! ✅
+```
+
+---
+
+**✅ Fix Applied!** The code change is in `character.py` line ~375.

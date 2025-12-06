@@ -1,8 +1,9 @@
 #This is game.py - the main game logic for Bomberman
 import pygame
 from character import Character
+from enemy import Enemy
 from blocks import Hard_block, Soft_Block
-from random import choice
+from random import choice, randint
 import gamesetting as gs
 
 # ============================================================================
@@ -46,11 +47,14 @@ class Game:
       "hard_block": pygame.sprite.Group(),    # Static indestructible barriers
       "soft_block": pygame.sprite.Group(),    # Destructible blocks
       "bomb": pygame.sprite.Group(),          # Bombs placed by player
+      "explosion": pygame.sprite.Group(),     # Explosion effects
+      "enemies": pygame.sprite.Group(),      # Enemy characters
       "player": pygame.sprite.Group()         # Player character
     }
     
     # Create player character at starting position (grid: row 3, col 2)
     self.PLAYER = Character(self, self.ASSETS.player_char, self.groups["player"], 3, 2, gs.SIZE)
+    
 
     # CAMERA SYSTEM - Smooth following with deadzone
     # Current camera offsets (in pixels) - what's actually rendered
@@ -85,6 +89,21 @@ class Game:
     for value in self.groups.values():
       for item in value:
         item.update()
+    # Perform enemy collision check with explosions, only if there is an explosion
+    if self.groups["explosion"]:
+      # Compare explosion group with the enemies group, check for collision. This will retrun a dictionary
+      # keys: group 1, values: list of all group 2 that collision detection occurs
+      killed_enemies = pygame.sprite.groupcollide(self.groups["explosion"],
+                                                   self.groups["enemies"], False, False)
+      if killed_enemies:
+         # Cycle through the dictionary, performing checks on each enemy colliding with a flame
+         for flame, enemies in killed_enemies.items():
+           # Cycle through each enemy in the dictionary value list
+           for enemy in enemies:
+             if pygame.sprite.collide_mask(flame,enemy):
+               enemy.destroy()
+
+
 
     # Smoothly interpolate camera current offsets toward target offsets
     dx = self.cam_target_x - self.x_camera_offset
@@ -158,7 +177,7 @@ class Game:
     #                 (col_num * gs.SIZE, (row_num * gs.SIZE) + gs.Y_OFFSET))
 
     #Fill the background entirely
-    window.fill(gs.GREY)
+    window.fill(gs.PURPLEISH)
     #This is from gemini as a test
 
     # Apply camera offsets to background tiles
@@ -188,8 +207,6 @@ class Game:
             item.draw(window)
 
 
-
-
   def generate_level_matrix(self,rows,cols):
     """Generate the basic level matrix"""
     matrix = []
@@ -200,6 +217,7 @@ class Game:
       matrix.append(line)
     self.insert_hard_block_into_matrix(matrix)  
     self.insert_soft_block_into_matrix(matrix)
+    self.insert_enemies_into_level(matrix)
     for row in matrix:
       print(row)
     return matrix
@@ -243,13 +261,32 @@ class Game:
                                self.groups["soft_block"],row_num,col_num,)
            matrix[row_num][col_num] = cell
     return     
-    # for row_num, row in enumerate(matrix):
-    #   for col_num, col in enumerate(row):
-    #     if row_num == 0 or row_num == len(matrix)-1 or \
-    #         col_num == 0 or col_num == len(row)-1 or \
-    #           (row_num % 2 == 0 and col_num % 2 == 0):
-    #      matrix[row_num][col_num] = Hard_block(self, # Pass the Game instance
-    #                                   self.ASSETS.hard_block["hard_block"], 
-    #                                   self.hard_blocks,
-    #                                   row_num, col_num)
-    # return           
+
+
+  def insert_enemies_into_level(self,matrix):
+    """Randomly insert enemies into the level matrix, using level matrix for valid locations"""
+    enemies_list = ["ballom" for i in range(10)]
+    # Get grid coordinates of the player character
+    pl_col = self.PLAYER.col_num
+    pl_row = self.PLAYER.row_num
+
+    # Load in the enemies
+    for enemy in enemies_list:
+        valid_choice = False
+        while not valid_choice:
+          row = randint(0, gs.ROWS - 1)
+          col = randint(0, gs.COLS - 1)
+
+          # Check if this row/col within 3 blocks of the player
+          if row in [pl_row - 3, pl_row - 2, pl_row - 1, pl_row, pl_row + 1, pl_row + 2, pl_row + 3] and \
+             col in [pl_col - 3, pl_col - 2, pl_col - 1, pl_col, pl_col + 1, pl_col + 2, pl_col + 3]:
+             continue
+          
+          elif matrix[row][col] == "_":
+            valid_choice = True
+            Enemy(self, self.ASSETS.ballom, self.groups["enemies"], row, col, gs.SIZE)
+          else:
+            continue
+          
+
+      

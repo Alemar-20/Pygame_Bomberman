@@ -2,16 +2,14 @@
 
 # A common, game-friendly default resolution that fits most laptops nicely
 SCREENWIDTH = 1280
-SCREENHEIGHT = 720
-
-
+SCREENHEIGHT = 720  #default 720
+               #892
 
 # GAME FRAMES PER SECONDS
 FPS = 60
 
 # Y COORDINATE OFFSET FOR SPRITES
 Y_OFFSET = 92
-
 
 # ACTUAL SPRITE SIZE FROM YOUR SHEET
 SPRITE_WIDTH = 32   # Most common size for this style
@@ -25,9 +23,8 @@ TILE_HEIGHT = 32
 SIZE = 64  # SIZE OF EACH TILE IN PIXELS
 # Increase the level size so the world is larger than the screen
 # This allows the camera to scroll when the player moves around
-ROWS = 20
-COLS = 40
-
+ROWS = 20 #def 20
+COLS = 30 # 40
 
 # COLOURS
 BLACK = (0, 0, 0)
@@ -54,7 +51,6 @@ PURPLEISH = (95,107,210)
 DARK_RED = (97,25,19)
 
 # SPRITE COORDINATES
-
 PLAYER = {
     # Row 0: Walking
     "walk_down": [(0, 0), (0, 1), (0, 2)], 
@@ -81,9 +77,24 @@ PLAYER = {
     "sleep_anim": [(5, 0), (5, 1), (5, 2), (5, 3), (5, 4)],
 }
 
-#HARD_BLOCK = {"hard_block":[(0,2)]}
-#HARD_BLOCK = {"hard_block":[(0,1)]} #before  [(0.2,1.2)]}
-HARD_BLOCK = {"hard_block":[(0,1)]}
-SOFT_BLOCK = {"soft_block":[(0,7)]} #block for purple soft block [(0,7]}
+HARD_BLOCK = {"hard_block":[(2,1)]} #0,1 default  #0,4
+SOFT_BLOCK = {"soft_block":[(0,0),(0,1),(0,2),(0,3),
+                            (1,0),(1,2),(1,3),(1,4),
+                            (2,0),(2,1),(2,2)]} #block for purple soft block [(0,7]}
 BOMB = {"bomb": [(0,0),(0,1),(0,2),(0,1),]} #(0,4),(0,5)]}  #bomb animation frames
-#BOMB = {"bomb": [(0,2)]}  #bomb animation frames
+# OLD COORDINATES (WRONG - all pointing to same rows, no full spread):
+EXPLOSION = {"centre":[(2,7),(2,8),(2,9),(2,10)],
+             "left_end":[(3,0),(3,1),(3,2),(3,3)],
+             "right_end":[(3,0),(3,1),(3,2),(3,3)],
+             "up_end":[(4,0),(4,1),(4,2),(4,3)],
+             "down_end":[(4,0),(4,1),(4,2),(4,3)],
+             "left_mid":[(3,4),(3,5),(3,6),(3,7)], 
+             "right_mid":[(3,4),(3,5),(3,6),(3,7)],
+             "up_mid":[(4,4),(4,5),(4,6),(4,7)],
+             "down_mid":[(4,4),(4,5),(4,6),(4,7)],
+            }
+BALLOM = {"walk_right":[(5,0),(5,1),(5,2)],
+          "walk_down":[(5,0),(5,1),(5,2)],
+          "walk_left":[(5,3),(5,4),(5,5)],
+          "walk_up":[(5,3),(5,4),(5,5)],
+          "death":[(5,6),(5,7),(5,8),(5,9),(5,10)],}

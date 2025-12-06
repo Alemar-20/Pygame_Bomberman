@@ -18,6 +18,9 @@
 import pygame
 import gamesetting as gs
 
+# Import block classes for collision detection in explosion spreading
+from blocks import Hard_block, Soft_Block
+
 # ============================================================================
 # CLASS: Character - Player sprite with movement, animation, and collision
 # ============================================================================
@@ -56,8 +59,9 @@ class Character(pygame.sprite.Sprite):
         # CHARACTER ATTRIBUTES
         self.alive = True
         self.speed = 3  # Pixels per frame when moving
-        self.bomb_limit = 1
+        self.bomb_limit = 2
         self.remote = True
+        self.power = 2
 
 
         # CHARACTER ACTION/ANIMATION STATE
@@ -75,6 +79,23 @@ class Character(pygame.sprite.Sprite):
         self.image = self.image_dict[self.action][self.index]
 
         # HITBOX SETUP for collision detection
+        # # New (explicit, centered hitbox):
+        # img_w, img_h = self.image.get_size()
+        # # amount to shrink the visual sprite to form the hitbox (total width/height)
+        # shrink_x = 20  # total pixels removed from width (10 each side)
+        # shrink_y = 20  # total pixels removed from height
+        # hit_w = max(1, img_w - shrink_x)
+        # hit_h = max(1, img_h - shrink_y)
+
+        # # compute topleft so hitbox is centered inside the sprite at (self.x, self.y)
+        # hit_x = int(self.x + (img_w - hit_w) // 2)
+        # hit_y = int(self.y + (img_h - hit_h) // 2)
+
+        # self.rect = pygame.Rect(hit_x, hit_y, hit_w, hit_h)
+
+        # # optional: keep the image size for future use
+        # self._image_w = img_w
+        # self._image_h = img_h
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.rect.inflate_ip(-20, -20)  # Shrink hitbox by 20px (10 on each side)
         self.offset = 10  # Offset to keep the hitbox centered inside the image
@@ -109,14 +130,11 @@ class Character(pygame.sprite.Sprite):
                     row, col, = ((self.rect.centery - gs.Y_OFFSET)//gs.SIZE, self.rect.centerx // gs.SIZE)
                     if self.GAME.level_matrix[row][col] == "_" and self.bomb_planted < self.bomb_limit:
                         Bomb(self.GAME, self.GAME.ASSETS.bomb["bomb"], 
-                             self.GAME.groups["bomb"], row, col, gs.SIZE, self.remote)  
+                             self.GAME.groups["bomb"], self.power ,row, col, gs.SIZE, self.remote)  
                         print(self.bomb_planted)
-                elif event.key == pygame.K_LCTRL and self.remote :
+                elif event.key == pygame.K_LCTRL and self.remote and self.GAME.groups["bomb"]:
                     bomb_list = self.GAME.groups["bomb"].sprites()
                     bomb_list[-1].explode()
-
-
-
 
         # Continuous key polling for smooth movement
         keys_pressed = pygame.key.get_pressed() 
@@ -149,7 +167,7 @@ class Character(pygame.sprite.Sprite):
         - Camera offsets shift the character position, creating the camera follow effect
         - Commented debug code shows how to draw the hitbox for debugging
         """
-        window.blit(self.image, (self.x - x_offset, self.y - y_offset))
+        window.blit(self.image, (int(self.x) - int(x_offset), int(self.y) - int(y_offset)))
         #pygame.draw.rect(window, gs.RED, self.rect, 1)
 
         # Optional: Uncomment to see the red hitbox for debugging
@@ -292,10 +310,9 @@ class Character(pygame.sprite.Sprite):
         self.GAME.update_camera(self.rect.centerx, self.rect.centery)
 
 class Bomb(pygame.sprite.Sprite):
-    def __init__(self,game, image_list, group, row_num, col_num, size, remote):
+    def __init__(self,game, image_list, group, power, row_num, col_num, size, remote):
         super().__init__(group)
         self.GAME = game
-
 
         # Level matrix position (in grid tiles)
         self.row = row_num
@@ -311,7 +328,7 @@ class Bomb(pygame.sprite.Sprite):
         self.bomb_timer = 12    
         self.passable = True  # Bombs are passable until they explode
         self.remote = remote
-
+        self.power = power
 
         # Image
         self.index = 0
@@ -335,8 +352,6 @@ class Bomb(pygame.sprite.Sprite):
         if self.bomb_counter == self.bomb_timer and not self.remote:
             self.explode()
 
-
-
         self.rect.topleft = (int(self.x), int(self.y))
 
     def draw(self, window, x_offset=0, y_offset=0):
@@ -359,7 +374,6 @@ class Bomb(pygame.sprite.Sprite):
         self.GAME.level_matrix[self.row][self.col] = self
         self.GAME.PLAYER.bomb_planted += 1
         
-
     def animation(self):
         if pygame.time.get_ticks() - self.anim_timer >= self.anim_frame_time:
             self.index += 1
@@ -371,11 +385,18 @@ class Bomb(pygame.sprite.Sprite):
     def remove_bomb_from_grid(self):
         """Remove the bomb object from the level matrix"""
         self.GAME.level_matrix[self.row][self.col] = "_"
-        self.GAME.PLAYER.bomb_planted += 1
+        # OLD CODE (BUG - incremented instead of decremented):
+        # self.GAME.PLAYER.bomb_planted += 1
+        
+        # NEW CODE (FIX - decrement to reflect bomb removal):
+        self.GAME.PLAYER.bomb_planted -= 1  # Subtract 1 so player can plant again
 
     def explode(self):
         """Destroy the bomb and remove from the level matrix"""    
         self.kill()
+        Explosion(self.GAME, self.GAME.ASSETS.explosion, "centre", self.power, 
+                  self.GAME.groups["explosion"], self.row, self.col, self.size)
+        
         self.remove_bomb_from_grid()
 
     def planted_bomb_player_collision(self):
@@ -384,7 +405,151 @@ class Bomb(pygame.sprite.Sprite):
         if not self.rect.colliderect(self.GAME.PLAYER):
             self.passable = False
 
-
     def __repr__(self):
         return "'!'"         
             
+class Explosion(pygame.sprite.Sprite):
+    def __init__(self, game, image_dict, image_type, power, group, row_num, col_num, size):
+        super().__init__(group)
+        self.GAME = game
+
+        # Level matrix position (in grid tiles)
+        self.row_num = row_num
+        self.col_num = col_num
+
+        # Sprite Coordinates
+        self.size = size
+        self.y = (self.row_num * self.size) + gs.Y_OFFSET
+        self.x = self.col_num * self.size
+
+        # Explosion Image and animation
+        self.index = 0
+        self.anim_frame_time = 75 
+        self.anim_timer = pygame.time.get_ticks()
+
+        self.image_dict = image_dict    
+        self.image_type = image_type 
+
+        self.image = self.image_dict[self.image_type][self.index]
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+
+        # Streng 
+        self.power = power
+        self.passable = False
+        self.calculate_explosion_path()
+
+
+    def update(self):
+        self.animate()
+    
+    def draw(self, window, x_offset=0, y_offset=0):
+        """Render explosion sprite with camera offsets applied to both axes."""
+        window.blit(self.image, (int(self.x) - int(x_offset), int(self.y) - int(y_offset)))
+
+    def animate(self):
+        if pygame.time.get_ticks() - self.anim_timer >= self.anim_frame_time:
+            self.index += 1
+            if self.index == len(self.image_dict[self.image_type]):
+                self.kill()
+                return
+            self.image = self.image_dict[self.image_type][self.index]
+            self.anim_timer = pygame.time.get_ticks()        
+
+    def calculate_explosion_path(self):
+        """Explode adjacent cells, depedent on power and available cells"""        
+        #                   left, right, up, down    
+        valid_directions = [True, True, True, True]
+        for power_cell in range(self.power):
+            # Get a list of the 4 directions, tuple of cell values
+            directions = self.calculate_direction_cells(power_cell)
+            # Check the cells in each direction per the directions list above
+            for ind, dir in enumerate (directions):
+                # If the corresponding direction is still valid_directions is False, skip
+                if not valid_directions[ind]:
+                    continue
+                # If the current cell being checked is an empty cells, check the next cell in that direction
+                # To determine type of image display, wether it is a mid or end
+                if self.GAME.level_matrix[dir[0]][dir[1]] == "_":
+                    # If the end of the power range, use the end piece
+                    if power_cell == self.power - 1:
+                        FireBall(self.image_dict[dir[4]], self.GAME.groups["explosion"], dir[0], dir[1], gs.SIZE)
+                    # Check if the next cell in sequence is a barrier, use end piece if true, and change valid_directions
+                    # to false
+                    elif self.GAME.level_matrix[dir[2]][dir[3]] in self.GAME.groups["hard_block"].sprites():
+                        FireBall(self.image_dict[dir[4]], self.GAME.groups["explosion"], dir[0], dir[1], gs.SIZE)
+                        valid_directions[ind] = False
+                    # If next cell in sequence is not a barrier, and not the end of the flame power, use mid image
+                    else:
+                        FireBall(self.image_dict[dir[5]], self.GAME.groups["explosion"], dir[0], dir[1], gs.SIZE)    
+                # if the current cell being checked is not empty, but is a bomb, detonate the bomb
+                elif self.GAME.level_matrix[dir[0]][dir[1]] in self.GAME.groups["bomb"].sprites():
+                    self.GAME.level_matrix[dir[0]][dir[1]].explode()   
+                    valid_directions[ind] = False
+                # If the current cell being checked is not empty, but is a soft box - destroy it
+                elif self.GAME.level_matrix[dir[0]][dir[1]] in self.GAME.groups["soft_block"].sprites():
+                    self.GAME.level_matrix[dir[0]][dir[1]].destroy_soft_block()
+                    valid_directions[ind] = False   
+                # If the current cell being checked is not empty, but is a special box
+                
+                # If the current cell being checked is not empty, or a bomb, or a soft block, or special
+                else:
+                    valid_directions[ind] = False
+                    continue
+
+
+    def calculate_direction_cells(self,cell):
+        """Return a list of the four cells in the up and down, left and right directions"""        
+        left = (self.row_num, self.col_num - (cell + 1), # Check cell immediate left
+                self.row_num, self.col_num - (cell + 2), # Check cell left to that
+                "left_end", "left_mid")
+        right = (self.row_num, self.col_num + (cell + 1), # Check cell immediate right
+                self.row_num, self.col_num + (cell + 2), # Check cell right to that
+                "right_end", "right_mid")
+        up = (self.row_num - (cell +1), self.col_num,  # Check all immediete up
+              self.row_num - (cell + 2), self.col_num, # Check cell up to that
+              "up_end", "up_mid")
+        down = (self.row_num + (cell +1), self.col_num,  # Check all immediete down
+              self.row_num + (cell + 2), self.col_num, # Check cell below to that
+              "down_end", "down_mid")
+        return [left, right, up, down]      
+        
+class FireBall(pygame.sprite.Sprite):
+    def __init__(self, image_list, group, row_num, col_num, size):
+        super().__init__(group)
+        self.row_num = row_num
+        self.col_num = col_num
+
+        self.size = size
+
+        # Coordinates
+        self.y = self.row_num * self.size + gs.Y_OFFSET
+        self.x = self.col_num * self.size
+
+        # Image
+        self.index = 0
+        self.anim_frame_time = 75
+        self.anim_timer = pygame.time.get_ticks()
+        self.image_list = image_list
+        self.image = self.image_list[self.index]
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+
+        self.passable = False
+
+
+    def update(self):
+        # Keep rect synced with world position for collision detection
+        self.rect.topleft = (int(self.x), int(self.y))
+        self.animate()
+
+    def draw(self, window, x_offset=0, y_offset=0):
+        """Render fireball sprite with camera offsets applied to both axes."""
+        window.blit(self.image, (int(self.x) - int(x_offset), int(self.y) - int(y_offset)))        
+
+    def animate(self):
+        if pygame.time.get_ticks() - self.anim_timer >= self.anim_frame_time:
+            self.index += 1
+            if self.index == len(self.image_list):
+                self.kill()
+                return
+            self.image = self.image_list[self.index]
+            self.anim_timer = pygame.time.get_ticks()

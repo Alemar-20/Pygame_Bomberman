@@ -53,9 +53,6 @@ class Bomberman:
 
     # 3. Set the title
     pygame.display.set_caption("Bomba~ Na!")
-
-
-
     # 4. Create an instance of the Assets class to load and manage all game resources
     self.ASSETS = Assets()
     # 5. Create the main Game object
