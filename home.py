@@ -73,16 +73,6 @@ class Button:
 def start_game():
     print("START pressed - implement game start logic here")
 
-def pause_game():
-    print("PAUSE pressed - implement pause logic here")
-
-def resume_game():
-    print("RESUME pressed - implement resume logic here")
-
-def exit_game():
-    print("EXIT pressed - quitting")
-    pygame.quit()
-    sys.exit()
 
 # asset helper
 def maybe_image(name):
@@ -103,9 +93,9 @@ def create_row_buttons(labels, image_keys, callbacks, y=300, btn_w=180, btn_h=60
 
     return btns
 
-labels = ["START", "PAUSE", "RESUME", "EXIT"]
-image_keys = ["start_btn", "pause_btn", "resume_btn", "exit_btn"]
-callbacks = [start_game, pause_game, resume_game, exit_game]
+labels = ["START"]
+image_keys = ["start_btn"]
+callbacks = [start_game]
 
 buttons = create_row_buttons(labels, image_keys, callbacks)
 
