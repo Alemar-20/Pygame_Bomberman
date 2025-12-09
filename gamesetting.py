@@ -11,8 +11,12 @@ FPS = 60
 # Y COORDINATE OFFSET FOR SPRITES
 Y_OFFSET = 92
 
+# Enemy Attributes
+ENEMIES = {"ballom" : {"speed": 1, "wall_hack":False, "chase_player": False, "LoS": 0, "see_player_hack": False},
+           "onil": {"speed": 2, "wall_hack":False, "chase_player": True, "LoS": 4, "see_player_hack": False},}
+
 # ACTUAL SPRITE SIZE FROM YOUR SHEET
-SPRITE_WIDTH = 32   # Most common size for this style
+SPRITE_WIDTH = 32   # Most common size for this styles
 SPRITE_HEIGHT = 32
 
 # TILE SIZE FROM YOUR TILE SHEET
@@ -59,22 +63,22 @@ PLAYER = {
     "walk_up": [(2, 0), (2, 1), (2, 2)],
 
     # Row 2: Idling (Assuming these are the stand-still frames)
-    "idle_down": [(2, 3)],
-    "idle_left": [(2, 0)],
-    "idle_right": [(2, 6)],
-    "idle_up": [(2, 9)],
+    "idle_down": [(0, 0)],
+    "idle_left": [(3, 0)],
+    "idle_right": [(1, 0)],
+    "idle_up": [(2, 0)],
     
     # Row 1: Dead/Vulnerable (Adjusting based on observation)
-    "dead_anim": [(1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6)], 
+    "dead_anim": [(4, 0), (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6),(4,7),(4,8)], 
     
     # Row 3: Bomb/Kick Animation (Example)
     "kick_anim": [(3, 0), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6)],
     
     # Row 4: Happy/Win
-    "win_anim": [(4, 0), (4, 1), (4, 2), (4, 3)],
+    "win_anim": [(6, 0), (6, 1), (6, 2), (6, 3),(6,4),(6,5),(6,7)],
     
     # Row 5: Sleep
-    "sleep_anim": [(5, 0), (5, 1), (5, 2), (5, 3), (5, 4)],
+    "sleep_anim": [(7, 0), (7, 1), (7, 2), (7, 3), (7, 4),(7,5),(7,6),(7,7)],
 }
 
 HARD_BLOCK = {"hard_block":[(2,1)]} #0,1 default  #0,4
@@ -98,3 +102,11 @@ BALLOM = {"walk_right":[(5,0),(5,1),(5,2)],
           "walk_left":[(5,3),(5,4),(5,5)],
           "walk_up":[(5,3),(5,4),(5,5)],
           "death":[(5,6),(5,7),(5,8),(5,9),(5,10)],}
+
+
+ONIL = {"walk_right":[(8,0),(8,1),(8,2)],
+        "walk_down":[(8,0),(8,1),(8,2)],
+        "walk_left":[(8,3),(8,4),(8,5)],
+        "walk_up":[(8,3),(8,4),(8,5)],
+        "death":[(8,6),(8,7),(8,8),(8,9),(8,10)],
+        }

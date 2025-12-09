@@ -69,17 +69,39 @@ class Assets:
             self.rotate_images_in_list(self.explosion[image_list], 180) 
         
         # Load enemy sprite with colorkey enabled (to make black background transparent)
-        self.ballom = self.load_sprite_range(
-            gs.BALLOM, 
-            self.sprite_sheet,
-            row=16,
-            col=16,
-            width=16,
-            height=16,
-            resize=True,
-            apply_colorkey=True  # ← Only apply colorkey for enemy sprites
+        # self.ballom = { "ballom": self.load_sprite_range(
+        #     gs.BALLOM, 
+        #     self.sprite_sheet,
+        #     row=16,
+        #     col=16,
+        #     width=16,
+        #     height=16,
+        #     resize=True,
+        #     apply_colorkey=True  # ← Only apply colorkey for enemy sprites
+        # )    
+        # }
+        self.enemies = {"ballom": self.load_sprite_range(
+        gs.BALLOM, 
+        self.sprite_sheet,
+        row=16,
+        col=16,
+        width=16,
+        height=16,
+        resize=True,
+        apply_colorkey=True  # ← Only apply colorkey for enemy sprites
         )    
-    
+        }
+        self.enemies = {"onil": self.load_sprite_range(
+        gs.ONIL, 
+        self.sprite_sheet,
+        row=16,
+        col=16,
+        width=16,
+        height=16,
+        resize=True,
+        apply_colorkey=True  # ← Only apply colorkey for enemy sprites
+        )    
+        }
 
     
 

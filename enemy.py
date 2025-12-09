@@ -3,18 +3,20 @@ import gamesetting as gs
 from random import choice
 
 class Enemy(pygame.sprite.Sprite):
-  def __init__(self, game, image_dict,group, row_num, col_num, size):
+  def __init__(self, game, image_dict, group, type, row_num, col_num, size):
     super().__init__(group)
     self.GAME = game
+    # Type of enemy (Attribute for enemy depend on the type)
+    self.type = type
+
 
 
     # Attributes (dependent on our enemy type)
-    self.speed = 1               # Speed of the enemy
-    self.wall_hack = False       # Enemy can move through walls 
-    self.chase_player = False    # Enemy will chase the player
-    self.Los = 0                 # Distance enemy can see player
-    self.see_player_hack = False # # Enemy can see player through walls 
-
+    self.speed = gs.ENEMIES[self.type]["speed"]            # Speed of the enemy
+    self.wall_hack = gs.ENEMIES[self.type]["wall_hack"]       # Enemy can move through walls 
+    self.chase_player = gs.ENEMIES[self.type]["chase_player"]    # Enemy will chase the player
+    self.Los = gs.ENEMIES[self.type]["LoS"] * size                # Distance enemy can see player
+    self.see_player_hack = gs.ENEMIES[self.type]["see_player_hack"] * size # # Enemy can see player through walls 
 
     # Level Matrix spawn coordinates
     self.row = row_num
@@ -45,14 +47,22 @@ class Enemy(pygame.sprite.Sprite):
     self.image = self.image_dict[self.action][self.index]
     self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
+    # Enemy line of sight 
+    self.start_pos = self.rect.center
+    self.end_pos = self.GAME.PLAYER.rect.center
+
+
   def update(self):
    self.movement()
+   self.update_line_of_sight_with_player()
    self.animate()
 
 
   def draw(self, window, x_offset=0, y_offset=0):
     """Render enemy sprite with camera offsets applied to both axes."""
     window.blit(self.image, (int(self.x) - int(x_offset), int(self.y) - int(y_offset)))
+    pygame.draw.line(window, "black", (self.start_pos[0] - x_offset, self.start_pos[1]),
+                     (self.end_pos[0] - x_offset, self.end_pos[1]), 2)
 
   def movement(self):
     """Method that incorporate all movement conditions to enable
@@ -177,3 +187,8 @@ class Enemy(pygame.sprite.Sprite):
     self.index = 0
     self.action = "death"
     self.image = self.image_dict[self.action][self.index]
+
+  def update_line_of_sight_with_player(self):
+    """ Update the position of the enemy and player character"""  
+    self.start_pos = self.rect.center
+    self.end_pos = self.GAME.PLAYER.rect.center
