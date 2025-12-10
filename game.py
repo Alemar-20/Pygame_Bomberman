@@ -332,6 +332,7 @@ class Game:
     
     # Clear the level matrix
     self.level_matrix.clear()
+    self.level_info.set_timer()
     self.level_matrix = self.generate_level_matrix(gs.ROWS, gs.COLS)
 
     # Reset the camera x position back to zerro

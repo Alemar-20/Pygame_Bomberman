@@ -172,6 +172,7 @@ class Assets:
         )
         time_sprite = self.load_sprites(self.sprite_sheet, 4*16, 13*16, 64, 16)
         self.time_word = pygame.transform.scale(time_sprite, (256, 64))
+        
         self.time_word.set_colorkey(gs.BLACK)
         self.numbers_black = self.load_sprite_range(gs.NUMBERS_BLACK,
                                                    self.sprite_sheet,
@@ -197,6 +198,10 @@ class Assets:
                                                   height=16,   
                                                   resize=True,
                                                   apply_colorkey=True)
+        
+        left_word_sprite = self.load_sprites(self.sprite_sheet, 0*16, 13*16, 64, 16)
+        self.left_word = pygame.transform.scale(left_word_sprite, (256, 64))
+        self.left_word.set_colorkey(gs.BLACK)
 
         #This is from gemini as a test
         # --- ADD THIS CODE BELOW ---

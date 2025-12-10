@@ -12,6 +12,9 @@ class InfoPanel:
     # Level timer
     self.set_timer()
 
+    # Player Lives
+    self.player_lives_left_word = self.images.left_word
+
   def set_timer(self):
      # level timer
      self.time_total = gs.STAGE_TIME  # Total time for level in seconds
@@ -48,6 +51,13 @@ class InfoPanel:
     start_x = 320 if len(self.time_image) == 3 else 352 if len(self.time_image) == 2 else 384
     for num, image in enumerate(self.time_image):
       window.blit(image, (start_x + (gs.SIZE * num), 16))
+
+    # Player live left - positioned from right edge of window
+    window_width = window.get_width()
+    left_word_x = window_width - (gs.SIZE * 5) - 64  # LEFT word position from right
+    lives_num_x = window_width - gs.SIZE - 64         # Lives number position from right
+    window.blit(self.player_lives_left_word, (left_word_x, gs.SIZE // 4))  
+    window.blit(self.black_nums[self.GAME.PLAYER.lives][0], (lives_num_x, gs.SIZE // 4))
 
 
 
