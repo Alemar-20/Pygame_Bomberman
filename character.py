@@ -309,8 +309,8 @@ class Character(pygame.sprite.Sprite):
         self.set_player_position()
         
         self.alive = True
-        self.speed = 5  # Pixels per frame when moving
-        self.bomb_limit = 2
+        self.speed = 10  # Pixels per frame when moving
+        self.bomb_limit = 10
         self.remote = True
         self.power = 2
 

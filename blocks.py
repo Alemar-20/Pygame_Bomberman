@@ -52,7 +52,7 @@ class Blocks(pygame.sprite.Sprite):
     self.y = (self.row * self.size) + self.y_offset
 
     # Block attributes - passable=False means solid wall (blocks all movement)
-    self.passable = False
+    self.passable = True
 
     # Block display/sprite
     self.image_list = images  # List of animation frames (if any)
@@ -162,14 +162,17 @@ class Special_Soft_Block(Soft_Block):
     self.special_type = special_type
     print((self.row, self.col))
 
-  def kioll(self):
+  def kill(self):
     super().kill()
-    self.place_special()  
+    self.place_special_block()  
 
   def place_special_block(self):
       special_cell = Special(self.GAME,
                              self.GAME.ASSETS.specials[self.special_type][0],
                              self.special_type,
                              self.GAME.groups["specials"],
-                             self.row, self.col,)
+                             self.special_type,
+                             self.row,
+                             self.col,
+                             gs.SIZE)
       self.GAME.level_matrix[self.row][self.col] = "special_cell"                     

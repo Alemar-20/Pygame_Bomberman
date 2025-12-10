@@ -55,7 +55,7 @@ class Game:
     }
     
     # Create player character at starting position (grid: row 3, col 2)
-    self.player = Character(self, self.ASSETS.player_char, self.groups["player"], 3, 2, gs.SIZE)
+    self.PLAYER = Character(self, self.ASSETS.player_char, self.groups["player"], 3, 2, gs.SIZE)
     
 
     # CAMERA SYSTEM - Smooth following with deadzone
@@ -286,7 +286,7 @@ class Game:
       cell = Special_Soft_Block(self,
                                 self.ASSETS.soft_block["soft_block"],
                                 self.groups["soft_block"],
-                                row, col, gs.SIZE, power_up)   
+                                row, col, power_up)   
       matrix[row][col] = cell 
 
   def insert_enemies_into_level(self,matrix):
