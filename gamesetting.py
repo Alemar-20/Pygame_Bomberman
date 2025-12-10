@@ -208,3 +208,5 @@ SCORES = {"ballom": 100,
           "pass" : 800,
           "pontan": 800
            }
+
+STAGE_WORD = {"stage_word": [(14,0)]}

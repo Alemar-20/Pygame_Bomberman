@@ -84,6 +84,11 @@ class Game:
     # self.level_matrix = self.generate_level_matrix(gs.ROWS, gs.COLS)
     # self.level_info = InfoPanel(self, self.ASSETS)
     
+    # Level Transition
+    self.transition = False
+    self.level_transition = None
+
+
     # Game on settings
     self.game_on =False
     self.point_position = [(465, 500),(465, 543),(465, 607)]
@@ -120,6 +125,9 @@ class Game:
   def update(self):
     if not self.game_on:
       return
+    
+    if self.transition:
+      self.level_transition.update()
     
     # Update info panel 
     self.level_info.update()
@@ -223,6 +231,10 @@ class Game:
     if not self.game_on:
       window.blit(self.ASSETS.start_screen, (0,0))
       window.blit(self.ASSETS.start_screen_pointer, (self.pointer_pos))
+      return
+    
+    if self.transition:
+      self.level_transition.draw(window)
       return
     
     # Draw information panel to screen
@@ -373,8 +385,9 @@ class Game:
     self.level_info.set_timer()
     self.level_matrix = self.generate_level_matrix(gs.ROWS, gs.COLS)
 
-    # Reset the camera x position back to zerro
+    # Reset the camera x position back to zrro
     self.camera_x_offset = 0
+    self.level_transition = LevelTransition(self, self.ASSETS, self.level)
 
   def select_enemies_to_spawn(self):
     """Generate a list of enemies to spawn"""  
@@ -475,3 +488,50 @@ class Game:
     self.level_matrix = self.generate_level_matrix(gs.ROWS, gs.COLS)
     self.level_info = InfoPanel(self, self.ASSETS)     
 
+    self.level_transition = LevelTransition(self, self.ASSETS, self.level)
+
+class LevelTransition(pygame.sprite.Sprite):
+  def __init__(self, game, assets, stage_num):
+    super().__init__()
+    self.GAME = game
+    self.GAME.transition = True
+    self.ASSETS = assets
+
+    self.stage_num = stage_num
+    
+    self.time = 2800
+    self.timer = pygame.time.get_ticks()
+
+    self.image = self.ASSETS.stage_word
+    self.xpos = (gs.SCREENWIDTH // 2) - self.image.get_width() - 64
+    self.ypos = (gs.SCREENHEIGHT // 2) - self.image.get_height()
+
+    self.rect = self.image.get_rect(topleft=(self.xpos, self.ypos))
+
+    self.stage_num_img = self.generate_stage_number_image()
+
+  def generate_stage_number_image(self):
+    """ Generate the image for the stage number"""
+    num_imgs = []
+    for num in str(self.stage_num):
+      num_imgs.append(self.ASSETS.numbers_white[int(num)][0])
+    return num_imgs  
+  
+  def update(self):
+    if pygame.time.get_ticks() - self.timer >= self.time:
+      self.GAME.transition = False
+      self.kill()
+
+  def draw(self, window):
+    window.fill(gs.BLACK)
+    window.blit(self.image, self.rect)  
+    if len(self.stage_num_img) == 2:
+      for ind, img in enumerate(self.stage_num_img):
+        xpos = (gs.SCREENWIDTH //2) + 32 + (ind * 32)
+        ypos = (gs.SCREENHEIGHT // 2) - self.image.get_height()
+        window.blit(img, (xpos, ypos))
+
+    else:
+      xpos = (gs.SCREENWIDTH //2 ) + 64
+      ypos = (gs.SCREENHEIGHT // 2) - self.image.get_height()
+      window.blit(self.stage_num_img[0], (xpos, ypos))

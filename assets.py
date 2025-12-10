@@ -209,6 +209,11 @@ class Assets:
         pointer_img = self.load_sprite_sheet("images", "pointer.png")
         self.start_screen_pointer = pygame.transform.scale(pointer_img, (32, 32))
 
+        stage_word_sprite = self.load_sprites(self.sprite_sheet, 0*16, 14*16, 80, 16)
+        self.stage_word = pygame.transform.scale(stage_word_sprite, (300, 64))  #320
+        self.stage_word.set_colorkey(gs.BLACK)
+
+
 
 
 
