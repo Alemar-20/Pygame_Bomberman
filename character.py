@@ -48,6 +48,15 @@ class Character(pygame.sprite.Sprite):
         super().__init__(group)
         self.GAME = game
 
+        # Character sound
+        self.walk_sound_timer = pygame.time.get_ticks()
+        self.death_sound_timer = pygame.time.get_ticks()
+
+        self.death_sound_play = False
+
+        self.delay = False
+        self.delay_timer = pygame.time.get_ticks()
+
         # Level matrix position (in grid tiles)
         self.row_num = row_num
         self.col_num = col_num
@@ -140,19 +149,8 @@ class Character(pygame.sprite.Sprite):
 
 
     def draw(self, window, x_offset=0, y_offset=0):
-        """
-        DRAW - Render the character sprite to screen with camera offset applied
-        
-        PARAMETERS:
-        - window: pygame.Surface to draw on (the game screen)
-        - x_offset: Horizontal camera offset (subtracts from x coordinate)
-        - y_offset: Vertical camera offset (subtracts from y coordinate)
-        
-        NOTES:
-        - Camera offsets shift the character position, creating the camera follow effect
-        - Commented debug code shows how to draw the hitbox for debugging
-        """
-        window.blit(self.image, (int(self.x) - int(x_offset), int(self.y) - int(y_offset)))
+        if self.death_sound_play == False and self.delay == False:       
+         window.blit(self.image, (int(self.x) - int(x_offset), int(self.y) - int(y_offset)))
         #pygame.draw.rect(window, gs.RED, self.rect, 1)
 
         # Optional: Uncomment to see the red hitbox for debugging
@@ -184,12 +182,33 @@ class Character(pygame.sprite.Sprite):
         - Each direction typically has 3 frames for walking animation
         - This creates smooth sprite animation during movement
         """
+
+        if self.delay == True:
+            if pygame.time.get_ticks() - self.delay_timer >= 400 and \
+            self.death_sound_play == False:
+                self.death_sound_play = True
+                self.death_sound_timer = pygame.time.get_ticks()
+                self.GAME.ASSETS.sounds["BM - 09 Miss.mp3"].play()
+                self.index = len(self.image_dict[action]) - 1
+                self.delay = False
+                return
+            return
+            
+        if self.death_sound_play == True:
+            if pygame.time.get_ticks() - self.death_sound_timer >= 2500:
+                self.reset_player()
+                return
+            return
+
         if pygame.time.get_ticks() - self.anim_time_set > self.anim_time:
             self.index += 1
             if self.index == len(self.image_dict[action]):
                 self.index = 0
-                if self.action == "dead_anim":
-                    self.reset_player()
+                if self.action == "dead_anim" and self.delay == False:
+                    self.delay = True
+                    self.delay_timer = pygame.time.get_ticks()
+                    return
+                    #self.reset_player()
 
             #self.index = self.index % len(self.image_dict[action])
             self.image = self.image_dict[action][self.index]
@@ -295,6 +314,15 @@ class Character(pygame.sprite.Sprite):
         elif action == "walk_down":
             dy = self.speed
 
+
+        # play character sound when moving
+        if pygame.time.get_ticks() - self.walk_sound_timer >= 150:
+            if self.action in ["walk_left", "walk_right"]:
+                self.GAME.ASSETS.sounds["Bomberman SFX (1).wav"].play()
+            elif self.action in ["walk_up", "walk_down"]:
+                self.GAME.ASSETS.sounds["Bomberman SFX (2).wav"].play()
+            self.walk_sound_timer = pygame.time.get_ticks()
+
         # --- PHASE 1: MOVE X-AXIS ---
         self.x += dx
         # Update rect topleft to keep both X and Y in sync
@@ -371,6 +399,8 @@ class Character(pygame.sprite.Sprite):
         # Now create the initial image and rect
         self.set_player_images()
 
+        self.death_sound_play = False
+
         # HITBOX SETUP for collision detection
         # Recalculate rect to be the proper collision hitbox (smaller than sprite)
         img_w, img_h = self.image.get_size()  # Get actual image dimensions (64x64)
@@ -402,6 +432,9 @@ class Character(pygame.sprite.Sprite):
             if pygame.sprite.collide_mask(self, item):
                 self.action = "dead_anim"
                 self.alive = False
+                self.GAME.bg_music.stop()
+                self.GAME.bg_music_special.stop()
+                self.GAME.ASSETS.sounds["Bomberman SFX (5).wav"].play()              
                 return
     
     def update_score(self,score):

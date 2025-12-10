@@ -411,6 +411,7 @@ class Game:
     # Reset the camera x position back to zrro
     self.camera_x_offset = 0
     self.level_transition = LevelTransition(self, self.ASSETS, self.level)
+    self.music_playing = False
 
   def select_enemies_to_spawn(self):
     """Generate a list of enemies to spawn"""  

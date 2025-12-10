@@ -209,7 +209,6 @@ SCORES = {"ballom": 100,
           "pontan": 800
            }
 
-STAGE_WORD = {"stage_word": [(14,0)]}
 SOUNDS = ["Bomberman SFX (1).wav",
           "Bomberman SFX (2).wav",
           "Bomberman SFX (3).wav",
