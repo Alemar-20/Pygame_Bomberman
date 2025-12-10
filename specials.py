@@ -74,6 +74,7 @@ class Special(pygame.sprite.Sprite):
 
   def invisible_special(self, player):
      # Make player invisible to enemies
-     player.invisible = True
+     player.invisibility = True
+     player.invisibility_timer = pygame.time.get_ticks()
 
 

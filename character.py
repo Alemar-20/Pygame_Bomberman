@@ -113,12 +113,14 @@ class Character(pygame.sprite.Sprite):
         UPDATE - Update sprite state each frame (currently empty as movement is
         handled in move() and animation in animate())
         """
-        # if there are flame/explosion, then perform a collision check
-        if len(self.GAME.groups["explosion"]) > 0 and self.flame_pass == False:
-            self.deadly_collision(self.GAME.groups["explosion"])
 
-        # Perform collision detection with enemies
-        self.deadly_collision(self.GAME.groups["enemies"])
+        if self.invisibility == False:
+        # if there are flame/explosion, then perform a collision check
+            if len(self.GAME.groups["explosion"]) > 0 and self.flame_pass == False:
+                self.deadly_collision(self.GAME.groups["explosion"])
+
+            # Perform collision detection with enemies
+            self.deadly_collision(self.GAME.groups["enemies"])
 
         # Play death animation if not alive
         if self.action == "dead_anim":
@@ -126,6 +128,15 @@ class Character(pygame.sprite.Sprite):
             if self.index == len(self.image_dict[self.action]) - 1:
                 self.reset_player()
                 return    
+
+        # Invisibility Timer countdown
+        if not self.invisibility:
+            return
+        
+        if pygame.time.get_ticks() - self.invisibility_timer >= 20000:
+            self.invisibility = False
+            self.invisibility_timer = None
+
 
     def draw(self, window, x_offset=0, y_offset=0):
         """
@@ -333,6 +344,8 @@ class Character(pygame.sprite.Sprite):
         self.wall_hack = False
         self.bomb_hack = False
         self.flame_pass = False
+        self.invisibility = False
+        self.invisibility_timer = None
 
 
 

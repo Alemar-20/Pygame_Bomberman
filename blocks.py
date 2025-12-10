@@ -139,9 +139,30 @@ class Soft_Block(Blocks):
       if pygame.time.get_ticks() - self.anim_timer > self.anim_frame_time:
         self.image_index += 1
         if self.image_index >= len(self.image_list) - 1:
-          self.kill()
+           self.kill()
         self.image = self.image_list[self.image_index]
-        self.anim_timer = pygame.time.get_ticks()  
+        self.anim_timer = pygame.time.get_ticks()
+      for enemy in self.GAME.groups["enemies"]:
+          if enemy.destroyed:
+             continue
+          if not self.rect.colliderect(enemy):
+              continue
+          if pygame.sprite.collide_mask(self,enemy):
+                 enemy.destroy()
+      if self.rect.colliderect(self.GAME.PLAYER):
+           if pygame.sprite.collide_mask(self,self.GAME.PLAYER):
+              self.GAME.PLAYER.action = "dead_anim"
+              self.GAME.PLAYER.alive = False          
+      # for enemy in self.GAME.groups["enemies"]:
+      #     if enemy.destroyed:
+      #        continue
+      #     if not self.rect.colliderect(enemy):
+      #         continue
+      #     if pygame.sprite.collide_mask(self,enemy):
+      #            enemy.destroy()
+      # if not self.rect.colliderect(self.GAME.PLAYER):
+      #      if pygame.sprite.collide_mask(self,self.GAME.PLAYER):
+      #         self.GAME.PLAYER.action = "dead_anim"
 
 
   def destroy_soft_block(self):
@@ -159,7 +180,7 @@ class Special_Soft_Block(Soft_Block):
   def __init__(self, game, images, group, row_num, col_num, special_type):
     super().__init__(game, images, group, row_num, col_num) 
 
-    self.special_type = "remote"
+    self.special_type = "invisible"  # For now, only invisibility special
     print((self.row, self.col))
 
   def kill(self):
