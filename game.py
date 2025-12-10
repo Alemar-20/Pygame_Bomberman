@@ -2,8 +2,9 @@
 import pygame
 from character import Character
 from enemy import Enemy
-from blocks import Hard_block, Soft_Block
+from blocks import Hard_block, Soft_Block, Special_Soft_Block
 from random import choice, randint
+from specials import Special
 import gamesetting as gs
 
 # ============================================================================
@@ -47,13 +48,14 @@ class Game:
       "hard_block": pygame.sprite.Group(),    # Static indestructible barriers
       "soft_block": pygame.sprite.Group(),    # Destructible blocks
       "bomb": pygame.sprite.Group(),          # Bombs placed by player
+      "specials" : pygame.sprite.Group(),      # Special items/power-ups
       "explosion": pygame.sprite.Group(),     # Explosion effects
       "enemies": pygame.sprite.Group(),      # Enemy characters
       "player": pygame.sprite.Group()         # Player character
     }
     
     # Create player character at starting position (grid: row 3, col 2)
-    self.PLAYER = Character(self, self.ASSETS.player_char, self.groups["player"], 3, 2, gs.SIZE)
+    self.player = Character(self, self.ASSETS.player_char, self.groups["player"], 3, 2, gs.SIZE)
     
 
     # CAMERA SYSTEM - Smooth following with deadzone
@@ -75,7 +77,8 @@ class Game:
     self.deadzone_ratio = 0.6
     
     # LEVEL INFORMATION
-    self.level = 48
+    self.level = 1
+    self.level_special = self.select_a_special()
     self.level_matrix = self.generate_level_matrix(gs.ROWS, gs.COLS)
 
   def input(self, events):
@@ -217,6 +220,8 @@ class Game:
       matrix.append(line)
     self.insert_hard_block_into_matrix(matrix)  
     self.insert_soft_block_into_matrix(matrix)
+    self.insert_power_up_into_matrix(matrix, self.level_special)
+    self.insert_power_up_into_matrix(matrix, "exit")
     self.insert_enemies_into_level(matrix)
     for row in matrix:
       print(row)
@@ -261,7 +266,28 @@ class Game:
                                self.groups["soft_block"],row_num,col_num,)
            matrix[row_num][col_num] = cell
     return     
-
+  def insert_power_up_into_matrix(self,matrix, special):
+      """Randomly insert the special Block into the level matrix"""
+      power_up = special
+      valid = False
+      while not valid:
+        row = randint(0, gs.ROWS - 1)
+        col = randint(0, gs.COLS - 1)
+        if row == 0 or row == len(matrix) - 1 or col == 0 or col == len(matrix[0]) - 1:
+          continue
+        elif row % 2 == 0 and col % 2 == 0:
+          continue
+        elif row in [2,3,4] and col in [1,2,3]:
+          continue
+        elif matrix[row][col] != "_":
+          continue
+        else:
+          valid = True
+      cell = Special_Soft_Block(self,
+                                self.ASSETS.soft_block["soft_block"],
+                                self.groups["soft_block"],
+                                row, col, gs.SIZE, power_up)   
+      matrix[row][col] = cell 
 
   def insert_enemies_into_level(self,matrix):
     """Randomly insert enemies into the level matrix, using level matrix for valid locations"""
@@ -334,3 +360,28 @@ class Game:
       for num in range(num_3):
         enemies_list.append(choice(list(enemies.values()))) 
       return   
+  
+  def select_a_special(self):
+    special = list(gs.SPECIALS.keys())
+    special.remove("exit")
+    if self.level == 4:
+      power_up = "speed_up"
+    elif self.level == 1:
+      power_up = "bomb"
+    elif self.player.bomb_limit <= 2 or self.player.power <= 2:
+      power_up = choice (["bomb_up", "fire_up"])
+    else:
+      if self.player.wall_hack:
+        special.remove("wall_hack")
+      if self.player.remote.detonate:
+        special.remove("remote")    
+      if self.player.bomb_hack:
+        special.remove("bomb_pass") 
+      if self.player.flame_hack:
+        special.remove("flame_pass")    
+      if self.player.bomb_limit == 10:
+        special.remove("bomb_up")
+      if self.player.power == 10:
+        special.remove("fire_up")
+      power_up == choice(special) 
+    return power_up       

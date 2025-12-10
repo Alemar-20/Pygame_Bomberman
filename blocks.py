@@ -14,6 +14,7 @@
 
 #This is blocks.py - defines block classes for the Bomberman game
 import pygame
+from specials import Special
 import gamesetting as gs
 
 # ============================================================================
@@ -153,3 +154,22 @@ class Soft_Block(Blocks):
 
   def __repr__(self):
     return "'@'"
+
+class Special_Soft_Block(Soft_Block):
+  def __init__(self, game, images, group, row_num, col_num, special_type):
+    super().__init__(game, images, group, row_num, col_num) 
+
+    self.special_type = special_type
+    print((self.row, self.col))
+
+  def kioll(self):
+    super().kill()
+    self.place_special()  
+
+  def place_special_block(self):
+      special_cell = Special(self.GAME,
+                             self.GAME.ASSETS.specials[self.special_type][0],
+                             self.special_type,
+                             self.GAME.groups["specials"],
+                             self.row, self.col,)
+      self.GAME.level_matrix[self.row][self.col] = "special_cell"                     

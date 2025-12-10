@@ -158,7 +158,17 @@ class Assets:
             resize=True,
             apply_colorkey=True
         )
-    
+        self.specials = self.load_sprite_range(
+            gs.SPECIALS,
+            self.sprite_sheet,
+            row=16,
+            col=16,
+            width=16,
+            height=16,
+            resize=True,
+            apply_colorkey=True
+            
+        )
 
         #This is from gemini as a test
         # --- ADD THIS CODE BELOW ---
