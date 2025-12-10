@@ -21,7 +21,7 @@ class InfoPanel:
      # Images for Info Panel
      self.time_image = self.update_time_image()
      self.time_word_image = self.images.time_word
-     self.time_word_rect = self.time_word_image.get_rect(topleft=(32,32))
+     self.time_word_rect = self.time_word_image.get_rect(topleft=(gs.SIZE, gs.SIZE // 4))
 
   def update_time_image(self):
     """ Update the image list for the time indicator on the info panel"""    
@@ -45,9 +45,9 @@ class InfoPanel:
   def draw(self, window):
     # Draw the Time indicator to the screen
     window.blit(self.time_word_image, self.time_word_rect)
-    start_x = 192 if len(self.time_image) == 3 else 224 if len(self.time_image) == 2 else 256
+    start_x = 320 if len(self.time_image) == 3 else 352 if len(self.time_image) == 2 else 384
     for num, image in enumerate(self.time_image):
-      window.blit(image, (start_x + (gs.SIZE * num), 32))
+      window.blit(image, (start_x + (gs.SIZE * num), 16))
 
 
 

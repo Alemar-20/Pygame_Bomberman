@@ -170,7 +170,8 @@ class Assets:
             apply_colorkey=True
 
         )
-        self.time_word = pygame.transform.scale(self.load_sprites(self.sprite_sheet, 4*16, 13*16, 110, 16), (gs.SIZE * 5, gs.SIZE))
+        time_sprite = self.load_sprites(self.sprite_sheet, 4*16, 13*16, 64, 16)
+        self.time_word = pygame.transform.scale(time_sprite, (256, 64))
         self.time_word.set_colorkey(gs.BLACK)
         self.numbers_black = self.load_sprite_range(gs.NUMBERS_BLACK,
                                                    self.sprite_sheet,
