@@ -52,7 +52,7 @@ class Blocks(pygame.sprite.Sprite):
     self.y = (self.row * self.size) + self.y_offset
 
     # Block attributes - passable=False means solid wall (blocks all movement)
-    self.passable = False
+    self.passable = True
 
     # Block display/sprite
     self.image_list = images  # List of animation frames (if any)
@@ -159,7 +159,7 @@ class Special_Soft_Block(Soft_Block):
   def __init__(self, game, images, group, row_num, col_num, special_type):
     super().__init__(game, images, group, row_num, col_num) 
 
-    self.special_type = special_type
+    self.special_type = "flame_pass"
     print((self.row, self.col))
 
   def kill(self):

@@ -203,11 +203,23 @@ class Character(pygame.sprite.Sprite):
         - Hitbox is smaller than the visual sprite (inflated -20px) for better gameplay feel
         - Used in move() to prevent character from walking through walls
         """
-        # 1. Get a list of all blocks we are touching
+                # 1. Get a list of all blocks we are touching
         hard_hits = pygame.sprite.spritecollide(self, self.GAME.groups["hard_block"], False)
-        soft_hits = pygame.sprite.spritecollide(self, self.GAME.groups["soft_block"], False)
-        bomb_hits = pygame.sprite.spritecollide(self, self.GAME.groups["bomb"], False)
-        all_hits = hard_hits + soft_hits + bomb_hits
+        
+        if self.bomb_hack == False:
+           bomb_hits = pygame.sprite.spritecollide(self, self.GAME.groups["bomb"], False)
+        
+        if self.wall_hack == False:
+           soft_hits = pygame.sprite.spritecollide(self, self.GAME.groups["soft_block"], False)
+           if self.bomb_hack == False:
+               all_hits = hard_hits + soft_hits + bomb_hits
+           else:
+               all_hits = hard_hits + soft_hits
+        else:
+           if self.bomb_hack == False:
+               all_hits = hard_hits + bomb_hits
+           else:
+               all_hits = hard_hits
 
         # 2. Check each block to see if it is passable
         for block in all_hits:
@@ -315,10 +327,13 @@ class Character(pygame.sprite.Sprite):
         
         self.alive = True
         self.speed = 3  # Pixels per frame when moving
-        self.bomb_limit = 2
+        self.bomb_limit = 1
         self.remote = True
         self.power = 1
         self.wall_hack = False
+        self.bomb_hack = False
+        self.flame_pass = False
+        
 
 
 
