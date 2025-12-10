@@ -383,5 +383,15 @@ class Game:
         special.remove("bomb_up")
       if self.player.power == 10:
         special.remove("fire_up")
-      power_up == choice(special) 
+      power_up = choice(special) 
     return power_up       
+
+
+  def new_stage(self):
+    """Increase the stage level number, and selects a new level specials"""
+    self.level += 1
+    self.level_special = self.select_a_special()
+    self.PLAYER.set_player_position()
+    self.PLAYER.set_player_images()
+    self.regenerate_stage()
+    print(self.level)

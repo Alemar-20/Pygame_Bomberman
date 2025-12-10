@@ -31,7 +31,8 @@ class Special(pygame.sprite.Sprite):
                               "remote": self.remote_special,
                               "bomb_pass": self.bomb_hack_special,
                               "flame_pass": self.flame_pass_special,
-                              "invisible": self.invisible_special
+                              "invisible": self.invisible_special,
+                              "exit": self.end_stage # Exit handled in game.py
                              }
 
 
@@ -39,6 +40,8 @@ class Special(pygame.sprite.Sprite):
       if self.GAME.PLAYER.rect.collidepoint(self.rect.center):
          # activate power up
          self.power_up_activate[self.name](self.GAME.PLAYER)
+         if self.name == "exit":
+            return
          self.GAME.level_matrix[self.row][self.col] = "_"
          self.kill()
          return
@@ -77,4 +80,9 @@ class Special(pygame.sprite.Sprite):
      player.invisibility = True
      player.invisibility_timer = pygame.time.get_ticks()
 
-
+  def end_stage(self, player):
+     """end the level, and generate a new level"""
+     if len(self.GAME.groups["enemies"].sprites()) > 0:
+        return
+     
+     self.GAME.new_stage()

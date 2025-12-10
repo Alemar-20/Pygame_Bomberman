@@ -180,7 +180,7 @@ class Special_Soft_Block(Soft_Block):
   def __init__(self, game, images, group, row_num, col_num, special_type):
     super().__init__(game, images, group, row_num, col_num) 
 
-    self.special_type = "invisible"  # For now, only invisibility special
+    self.special_type = special_type  # For now, only invisibility special
     print((self.row, self.col))
 
   def kill(self):
