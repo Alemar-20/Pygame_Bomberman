@@ -12,53 +12,51 @@
 #   - Assets: Loads and manages sprites, images, and game resources
 #   - Game: Core game logic (player, blocks, level management)
 #   - gamesetting: Global game configuration and constants
+#   - home: Home menu interface
 # ============================================================================
 
 import pygame
 from assets import Assets  # Class to manage all game assets (images, sounds, sprites)
 from game import Game      # Core game logic (levels, players, blocks, camera)
 import gamesetting as gs   # Global settings (screen size, FPS, colors, tile sizes, etc.)
+import home                # Home menu module
 
 # ============================================================================
 # CLASS: Bomberman - Main game controller and window manager
 # ============================================================================
 class Bomberman:
-  def __init__(self):
+  def __init__(self, screen):
     """
     CONSTRUCTOR - Initialize the Bomberman game window and core systems
     
+    PARAMETERS:
+    - screen: pygame.Surface - The existing screen/window to use
+    
     STEPS:
-    1. Initialize Pygame and set up display window
-       - Clamps window size to the user's display resolution
-       - Makes window resizable (RESIZABLE flag)
+    1. Use the provided screen instead of creating a new one
     2. Store windowed size for fullscreen toggle restoration
     3. Load game assets (sprites, images)
     4. Create the Game object (handles logic, camera, level)
     5. Initialize frame rate clock for consistent 60 FPS
     6. Set running flag to control main loop
     """
-    # 1. Initialize Pygame modules (MUST be done first before any display operations)
-    pygame.init()
+    # Use the existing screen passed from home menu
+    self.screen = screen
     
-    # 2. Set up the display window (the 'screen')
-    #    Use the configured size but clamp to the current display so it fits on any device.
-    info = pygame.display.Info()
-    screen_w = min(gs.SCREENWIDTH, info.current_w)
-    screen_h = min(gs.SCREENHEIGHT, info.current_h)
-    # Create a resizable window so players can adjust size at runtime
-    self.screen = pygame.display.set_mode((screen_w, screen_h), pygame.RESIZABLE)
-    # Track windowed size so we can toggle fullscreen and restore the windowed mode
-    self.windowed_size = (screen_w, screen_h)
+    # Get current screen size
+    self.windowed_size = (self.screen.get_width(), self.screen.get_height())
     self.fullscreen = False
 
-    # 3. Set the title
-    pygame.display.set_caption("Bomba~ Na!")
-    # 4. Create an instance of the Assets class to load and manage all game resources
+    # Update window title for game
+    pygame.display.set_caption("Bomba~ Na! - Game")
+    
+    # Create an instance of the Assets class to load and manage all game resources
     self.ASSETS = Assets()
-    # 5. Create the main Game object
-    #    It passes 'self' (the main Bomberman indstance) and the Assets object for the Game class to use
+    
+    # Create the main Game object
     self.GAME = Game(self, self.ASSETS)
-    # 6. Create a Clock object to manage the game's frame rate (FPS)
+    
+    # Create a Clock object to manage the game's frame rate (FPS)
     self.FPS = pygame.time.Clock()
 
     self.running = True
@@ -194,6 +192,23 @@ class Bomberman:
 # Standard Python convention: this block ensures the game only runs when 
 # the script is executed directly (not imported as a module)
 if __name__ == "__main__":
-  game = Bomberman()  # Create a new Bomberman game instance
-  game.rungame()      # Start the main game loop
-  pygame.quit()       # Clean up Pygame resources when loop exits
+  # Initialize pygame
+  pygame.init()
+  
+  # Create the main window
+  info = pygame.display.Info()
+  screen_w = min(gs.SCREENWIDTH, info.current_w)
+  screen_h = min(gs.SCREENHEIGHT, info.current_h)
+  screen = pygame.display.set_mode((screen_w, screen_h), pygame.RESIZABLE)
+  pygame.display.set_caption("Bomba~ Na!")
+  
+  # Show home menu first
+  should_start = home.run_menu(screen)
+  
+  # If user clicked start, run the game
+  if should_start:
+    game = Bomberman(screen)
+    game.rungame()
+  
+  # Clean up when done
+  pygame.quit()

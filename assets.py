@@ -3,6 +3,9 @@
 import pygame
 import gamesetting as gs
 
+while pygame.mixer.get_busy():
+    pass
+
 class Assets:
     def __init__(self):
         # DO NOT SCALE the sprite sheet if it's already the correct size (325x257)
@@ -81,6 +84,9 @@ class Assets:
             width=16,
             height=16,
             resize=True,
+            apply_colorkey=True  # ← Only apply colorkey for enemy sprites
+        )    
+    
             apply_colorkey=True
         )
         
