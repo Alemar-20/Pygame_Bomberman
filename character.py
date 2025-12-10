@@ -58,7 +58,7 @@ class Character(pygame.sprite.Sprite):
 
         # CHARACTER ATTRIBUTES
         self.alive = True
-        self.speed = 3  # Pixels per frame when moving
+        self.speed = 2  # Pixels per frame when moving
         self.bomb_limit = 2
         self.remote = True
         self.power = 2
@@ -79,26 +79,19 @@ class Character(pygame.sprite.Sprite):
         self.image = self.image_dict[self.action][self.index]
 
         # HITBOX SETUP for collision detection
-        # # New (explicit, centered hitbox):
-        # img_w, img_h = self.image.get_size()
-        # # amount to shrink the visual sprite to form the hitbox (total width/height)
-        # shrink_x = 20  # total pixels removed from width (10 each side)
-        # shrink_y = 20  # total pixels removed from height
-        # hit_w = max(1, img_w - shrink_x)
-        # hit_h = max(1, img_h - shrink_y)
-
-        # # compute topleft so hitbox is centered inside the sprite at (self.x, self.y)
-        # hit_x = int(self.x + (img_w - hit_w) // 2)
-        # hit_y = int(self.y + (img_h - hit_h) // 2)
-
-        # self.rect = pygame.Rect(hit_x, hit_y, hit_w, hit_h)
-
-        # # optional: keep the image size for future use
-        # self._image_w = img_w
-        # self._image_h = img_h
-        self.rect = self.image.get_rect(topleft=(self.x, self.y))
-        self.rect.inflate_ip(-20, -20)  # Shrink hitbox by 20px (10 on each side)
-        self.offset = 10  # Offset to keep the hitbox centered inside the image
+        # Create a properly centered hitbox that matches world coordinates
+        img_w, img_h = self.image.get_size()  # Get actual image dimensions (64x64)
+        shrink = 17  # Shrink 10px on each side (total 20px reduction)
+        hit_w = max(1, img_w - (shrink * 2))  # Width: 64 - 20 = 44
+        hit_h = max(1, img_h - (shrink * 2))  # Height: 64 - 20 = 44
+        
+        # Position hitbox so it's centered on (self.x, self.y)
+        # Instead of using offset after, we calculate the correct topleft position
+        hit_x = int(self.x + shrink)  # Topleft X: world_x + 10
+        hit_y = int(self.y + shrink)  # Topleft Y: world_y + 10
+        
+        self.rect = pygame.Rect(hit_x, hit_y, hit_w, hit_h)
+        self.offset = shrink  # Keep offset for reference (10 pixels)
 
     def input(self, events):
         """
@@ -174,6 +167,12 @@ class Character(pygame.sprite.Sprite):
         # debug_rect = self.rect.copy()
         # debug_rect.x -= offset
         # pygame.draw.rect(window, gs.RED, debug_rect, 1)
+
+        # # Draw the hitbox with camera offset applied (for debugging)
+        debug_rect = self.rect.copy()
+        debug_rect.x -= int(x_offset)
+        debug_rect.y -= int(y_offset)
+        pygame.draw.rect(window, gs.RED, debug_rect, 2)  # Red box, 2px thick
 
     def animate(self, action):
         """
@@ -287,21 +286,23 @@ class Character(pygame.sprite.Sprite):
 
         # --- PHASE 1: MOVE X-AXIS ---
         self.x += dx
-        self.rect.x = int(self.x + self.offset)
+        # Update rect topleft to keep both X and Y in sync
+        self.rect.topleft = (int(self.x + self.offset), int(self.y + self.offset))
         
         # Check collision using the new passable-aware logic
         if self.check_collision():
             self.x -= dx # Undo X movement
-            self.rect.x = int(self.x + self.offset)
+            self.rect.topleft = (int(self.x + self.offset), int(self.y + self.offset))
 
         # --- PHASE 2: MOVE Y-AXIS ---
         self.y += dy
-        self.rect.y = int(self.y + self.offset)
+        # Update rect topleft to keep both X and Y in sync
+        self.rect.topleft = (int(self.x + self.offset), int(self.y + self.offset))
         
         # Check collision using the new passable-aware logic
         if self.check_collision():
             self.y -= dy # Undo Y movement
-            self.rect.y = int(self.y + self.offset)
+            self.rect.topleft = (int(self.x + self.offset), int(self.y + self.offset))
 
         # --- FINAL UPDATES ---
         self.animate(action)   

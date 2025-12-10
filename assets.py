@@ -71,8 +71,12 @@ class Assets:
         for image_list in ["right_end", "right_mid", "down_end", "down_mid"]: 
             self.rotate_images_in_list(self.explosion[image_list], 180) 
         
-        # Load enemy sprite with colorkey enabled (to make black background transparent)
-        self.ballom = self.load_sprite_range(
+        # Load all enemy sprites from the same sprite sheet
+        # Initialize empty enemies dictionary
+        self.enemies = {}
+        
+        # Load each enemy type and add to the dictionary (DO NOT OVERWRITE)
+        self.enemies["ballom"] = self.load_sprite_range(
             gs.BALLOM, 
             self.sprite_sheet,
             row=16,
@@ -83,6 +87,87 @@ class Assets:
             apply_colorkey=True  # ← Only apply colorkey for enemy sprites
         )    
     
+            apply_colorkey=True
+        )
+        
+        self.enemies["onil"] = self.load_sprite_range(
+            gs.ONIL, 
+            self.sprite_sheet,
+            row=16,
+            col=16,
+            width=16,
+            height=16,
+            resize=True,
+            apply_colorkey=True
+        )
+        
+        self.enemies["dahl"] = self.load_sprite_range(
+            gs.DAHL, 
+            self.sprite_sheet,
+            row=16,
+            col=16,
+            width=16,
+            height=16,
+            resize=True,
+            apply_colorkey=True
+        )
+
+        self.enemies["minvo"] = self.load_sprite_range(
+            gs.MINVO, 
+            self.sprite_sheet,
+            row=16,
+            col=16,
+            width=16,
+            height=16,
+            resize=True,
+            apply_colorkey=True
+        )
+
+        self.enemies["doria"] = self.load_sprite_range(
+            gs.DORIA, 
+            self.sprite_sheet,
+            row=16,
+            col=16,
+            width=16,
+            height=16,
+            resize=True,
+            apply_colorkey=True
+        )
+
+        self.enemies["ovape"] = self.load_sprite_range(
+            gs.OVAPE, 
+            self.sprite_sheet,
+            row=16,
+            col=16,
+            width=16,
+            height=16,
+            resize=True,
+            apply_colorkey=True
+        )
+
+        self.enemies["pass"] = self.load_sprite_range(
+            gs.PASS, 
+            self.sprite_sheet,
+            row=16,
+            col=16,
+            width=16,
+            height=16,
+            resize=True,
+            apply_colorkey=True
+        )
+
+        self.enemies["pontan"] = self.load_sprite_range(
+            gs.PONTAN, 
+            self.sprite_sheet,
+            row=16,
+            col=16,
+            width=16,
+            height=16,
+            resize=True,
+            apply_colorkey=True
+        )
+    
+
         #This is from gemini as a test
         # --- ADD THIS CODE BELOW ---
         # Create a Green Background Block manually
