@@ -15,6 +15,7 @@
 # ============================================================================
 
 #This is character.py - defines the Character class for the Bomberman game
+from tokenize import group
 import pygame
 import gamesetting as gs
 
@@ -56,42 +57,9 @@ class Character(pygame.sprite.Sprite):
         self.x = self.col_num * self.size 
         self.y = (self.row_num * self.size) + gs.Y_OFFSET
 
-        # CHARACTER ATTRIBUTES
-        self.alive = True
-        self.speed = 2  # Pixels per frame when moving
-        self.bomb_limit = 2
-        self.remote = True
-        self.power = 2
+        self.set_player(image_dict)
 
-
-        # CHARACTER ACTION/ANIMATION STATE
-        self.action = "walk_left"  # Current animation direction
-
-        # Bomb Planted
-        self.bomb_planted = 0
-
-
-        # ANIMATION FRAME TRACKING
-        self.index = 0  # Current frame in animation sequence
-        self.anim_time = 50  # Milliseconds between frame updates
-        self.anim_time_set = pygame.time.get_ticks()  # Last frame switch time
-        self.image_dict = image_dict  # Dictionary of all animation sequences
-        self.image = self.image_dict[self.action][self.index]
-
-        # HITBOX SETUP for collision detection
-        # Create a properly centered hitbox that matches world coordinates
-        img_w, img_h = self.image.get_size()  # Get actual image dimensions (64x64)
-        shrink = 17  # Shrink 10px on each side (total 20px reduction)
-        hit_w = max(1, img_w - (shrink * 2))  # Width: 64 - 20 = 44
-        hit_h = max(1, img_h - (shrink * 2))  # Height: 64 - 20 = 44
-        
-        # Position hitbox so it's centered on (self.x, self.y)
-        # Instead of using offset after, we calculate the correct topleft position
-        hit_x = int(self.x + shrink)  # Topleft X: world_x + 10
-        hit_y = int(self.y + shrink)  # Topleft Y: world_y + 10
-        
-        self.rect = pygame.Rect(hit_x, hit_y, hit_w, hit_h)
-        self.offset = shrink  # Keep offset for reference (10 pixels)
+        self.lives = 3
 
     def input(self, events):
         """
@@ -145,7 +113,19 @@ class Character(pygame.sprite.Sprite):
         UPDATE - Update sprite state each frame (currently empty as movement is
         handled in move() and animation in animate())
         """
-        pass
+        # if there are flame/explosion, then perform a collision check
+        if len(self.GAME.groups["explosion"]) > 0:
+            self.deadly_collision(self.GAME.groups["explosion"])
+
+        # Perform collision detection with enemies
+        self.deadly_collision(self.GAME.groups["enemies"])
+
+        # Play death animation if not alive
+        if self.action == "dead_anim":
+            self.animate(self.action)
+            if self.index == len(self.image_dict[self.action]) - 1:
+                self.reset_player()
+                return    
 
     def draw(self, window, x_offset=0, y_offset=0):
         """
@@ -196,6 +176,8 @@ class Character(pygame.sprite.Sprite):
             self.index += 1
             if self.index == len(self.image_dict[action]):
                 self.index = 0
+                if self.action == "dead_anim":
+                    self.reset_player()
 
             #self.index = self.index % len(self.image_dict[action])
             self.image = self.image_dict[action][self.index]
@@ -309,6 +291,81 @@ class Character(pygame.sprite.Sprite):
         
         # Update camera based on the center of the player (x and y)
         self.GAME.update_camera(self.rect.centerx, self.rect.centery)
+
+    def set_player_position(self):
+        """Character position"""   
+        # Character position
+        self.x = self.col_num * self.size
+        self.y = (self.row_num * self.size) + gs.Y_OFFSET
+    
+    def set_player_images(self):
+        """Character images set"""
+        self.image = self.image_dict[self.action][self.index]
+        self.rect = self.image.get_rect(topleft=(self.x + self.offset, self.y + self.offset))
+
+    def set_player(self, image_dict):
+         # CHARACTER ATTRIBUTES
+         # starting
+        self.set_player_position()
+        
+        self.alive = True
+        self.speed = 2  # Pixels per frame when moving
+        self.bomb_limit = 2
+        self.remote = True
+        self.power = 2
+
+
+        # CHARACTER ACTION/ANIMATION STATE
+        self.action = "walk_left"  # Current animation direction
+
+        # Bomb Planted
+        self.bomb_planted = 0
+
+
+        # ANIMATION FRAME TRACKING
+        self.index = 0  # Current frame in animation sequence
+        self.anim_time = 50  # Milliseconds between frame updates
+        self.anim_time_set = pygame.time.get_ticks()  # Last frame switch time
+        self.image_dict = image_dict  # Dictionary of all animation sequences
+        
+        # Set offset BEFORE calling set_player_images (which needs it)
+        shrink = 17  # Shrink 17px on each side for hitbox
+        self.offset = shrink
+        
+        # Now create the initial image and rect
+        self.set_player_images()
+
+        # HITBOX SETUP for collision detection
+        # Recalculate rect to be the proper collision hitbox (smaller than sprite)
+        img_w, img_h = self.image.get_size()  # Get actual image dimensions (64x64)
+        hit_w = max(1, img_w - (shrink * 2))  # Width: 64 - 34 = 30
+        hit_h = max(1, img_h - (shrink * 2))  # Height: 64 - 34 = 30
+        
+        # Position hitbox so it's centered on (self.x, self.y)
+        hit_x = int(self.x + shrink)  # Topleft X: world_x + 17
+        hit_y = int(self.y + shrink)  # Topleft Y: world_y + 17
+        
+        self.rect = pygame.Rect(hit_x, hit_y, hit_w, hit_h)
+  
+    def reset_player(self):
+        self.lives -= 1
+        if self.lives < 0:
+            self.GAME.MAIN.running = False
+            return
+        
+        self.set_player(self.image_dict)
+
+    def deadly_collision(self, group):
+        if not self.alive:
+            return
+
+        for item in group:
+            if not self.rect.colliderect(item.rect):
+                continue    
+            if pygame.sprite.collide_mask(self, item):
+                self.action = "dead_anim"
+                self.alive = False
+                return
 
 class Bomb(pygame.sprite.Sprite):
     def __init__(self,game, image_list, group, power, row_num, col_num, size, remote):
