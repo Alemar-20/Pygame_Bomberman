@@ -289,9 +289,9 @@ class Game:
                                 row, col, power_up)   
       matrix[row][col] = cell 
 
-  def insert_enemies_into_level(self,matrix):
+  def insert_enemies_into_level(self,matrix, enemies=None):
     """Randomly insert enemies into the level matrix, using level matrix for valid locations"""
-    enemies_list = self.select_enemies_to_spawn()
+    enemies_list = self.select_enemies_to_spawn() if enemies == None else enemies
     print(enemies_list)
     # Get grid coordinates of the player character
     pl_col = self.PLAYER.col_num

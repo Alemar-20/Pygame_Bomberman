@@ -196,4 +196,4 @@ class Special_Soft_Block(Soft_Block):
                              self.row,
                              self.col,
                              gs.SIZE)
-      self.GAME.level_matrix[self.row][self.col] = "special_cell"                     
+      self.GAME.level_matrix[self.row][self.col] = special_cell                     

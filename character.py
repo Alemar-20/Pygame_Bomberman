@@ -577,14 +577,16 @@ class Explosion(pygame.sprite.Sprite):
                         FireBall(self.image_dict[dir[5]], self.GAME.groups["explosion"], dir[0], dir[1], gs.SIZE)    
                 # if the current cell being checked is not empty, but is a bomb, detonate the bomb
                 elif self.GAME.level_matrix[dir[0]][dir[1]] in self.GAME.groups["bomb"].sprites():
-                    self.GAME.level_matrix[dir[0]][dir[1]].explode()   
-                    valid_directions[ind] = False
+                     self.GAME.level_matrix[dir[0]][dir[1]].explode()   
+                     valid_directions[ind] = False
                 # If the current cell being checked is not empty, but is a soft box - destroy it
                 elif self.GAME.level_matrix[dir[0]][dir[1]] in self.GAME.groups["soft_block"].sprites():
-                    self.GAME.level_matrix[dir[0]][dir[1]].destroy_soft_block()
-                    valid_directions[ind] = False   
+                     self.GAME.level_matrix[dir[0]][dir[1]].destroy_soft_block()
+                     valid_directions[ind] = False   
                 # If the current cell being checked is not empty, but is a special box
-                
+                elif self.GAME.level_matrix[dir[0]][dir[1]] in self.GAME.groups["specials"].sprites():
+                     self.GAME.level_matrix[dir[0]][dir[1]].hit_by_explosion()
+                     valid_directions[ind] = False
                 # If the current cell being checked is not empty, or a bomb, or a soft block, or special
                 else:
                     valid_directions[ind] = False

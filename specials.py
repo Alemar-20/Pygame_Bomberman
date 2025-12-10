@@ -86,3 +86,14 @@ class Special(pygame.sprite.Sprite):
         return
      
      self.GAME.new_stage()
+
+  def hit_by_explosion(self):
+      """Action to take is special item is hit by an explosion"""
+
+      enemies = []
+      for _ in range(10):
+         enemies.append(gs.SPECIAL_CONNECTIONS[self.name])
+
+      self.GAME.insert_enemies_into_level(self.GAME.level_matrix, enemies)   
+      self.GAME.level_matrix[self.row][self.col] = "_"
+      self.kill()  
