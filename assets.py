@@ -85,9 +85,6 @@ class Assets:
             height=16,
             resize=True,
             apply_colorkey=True  # ← Only apply colorkey for enemy sprites
-        )    
-    
-            apply_colorkey=True
         )
         
         self.enemies["onil"] = self.load_sprite_range(
