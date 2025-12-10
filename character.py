@@ -417,6 +417,9 @@ class Character(pygame.sprite.Sprite):
         self.lives -= 1
         if self.lives < 0:
             self.GAME.game_on = False
+            self.GAME.check_top_score(self.score)
+            self.GAME.start_screen_music.play(loops=-1)
+            self.GAME.music_playing = False
             #self.GAME.MAIN.running = False
             return
         self.GAME.regenerate_stage()
@@ -476,6 +479,9 @@ class Bomb(pygame.sprite.Sprite):
 
         # Insert into level matrix
         self.insert_bomb_into_grid()
+
+        # Play sound when bomb is place
+        self.GAME.ASSETS.sounds["Bomberman SFX (3).wav"].play()
 
     def update(self):
         # Keep the collision rect in sync with the bomb's fixed world position.
@@ -570,6 +576,9 @@ class Explosion(pygame.sprite.Sprite):
         self.power = power
         self.passable = False
         self.calculate_explosion_path()
+
+        # Play explosin sound
+        self.GAME.ASSETS.sounds["Bomberman SFX (7).wav"].play()
 
 
     def update(self):

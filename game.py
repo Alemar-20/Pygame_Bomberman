@@ -102,6 +102,8 @@ class Game:
     self.stage_ending_music = self.ASSETS.sounds["BM - 05 Stage Clear.mp3"]
 
     self.start_screen_music.play(loops=-1)
+    self.top_score = 0
+    self.top_score_img = self.top_score_image()
 
   def input(self, events):
     # Expect an events list forwarded from main
@@ -149,7 +151,7 @@ class Game:
     if len(self.groups["enemies"].sprites()) == 0 and self.music_playing == True:
       self.music_playing = False
       self.bg_music.stop()
-      #self.bg_music_special.stop()
+      self.bg_music_special.stop()
       self.stage_ending_music.play()
     
     # Update info panel 
@@ -254,6 +256,10 @@ class Game:
     if not self.game_on:
       window.blit(self.ASSETS.start_screen, (0,0))
       window.blit(self.ASSETS.start_screen_pointer, (self.pointer_pos))
+      if self.top_score_img:
+        for i, img in enumerate(self.top_score_img):
+          scaled_img = pygame.transform.scale(img, (32, 32))
+          window.blit(scaled_img, (900 + (i * 32), 600))
       return
     
     if self.transition:
@@ -514,6 +520,27 @@ class Game:
 
     self.level_transition = LevelTransition(self, self.ASSETS, self.level)
     self.start_screen_music.stop()
+
+  # ORIGINAL CODE (INCORRECT)
+  # score_image = [self.ASSETS.numbers_white[int(image)]][0] for image in score]
+  # The bracket placement is wrong - [list][0] for item in ... is invalid syntax
+
+  def check_top_score(self, player_score):
+
+    if player_score > self.top_score:
+      self.top_score = player_score
+      self.top_score_img = self.top_score_image()
+  
+  # FIXED CODE
+  def top_score_image(self):
+    """Generate list of digit images for the top score display"""
+    score = [item for item in str(self.top_score)]  
+    # Correctly placed brackets: list comprehension returns a list of images
+    score_image = [self.ASSETS.numbers_white[int(image)][0] for image in score]
+    # If score is 0, ensure at least one digit (0) is displayed
+    if self.top_score == 0:
+      score_image.append(self.ASSETS.numbers_white[0][0]) 
+    return score_image   
 
 class LevelTransition(pygame.sprite.Sprite):
   def __init__(self, game, assets, stage_num):
