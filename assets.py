@@ -170,6 +170,32 @@ class Assets:
             apply_colorkey=True
 
         )
+        self.time_word = pygame.transform.scale(self.load_sprites(self.sprite_sheet, 4*16, 13*16, 110, 16), (gs.SIZE * 5, gs.SIZE))
+        self.time_word.set_colorkey(gs.BLACK)
+        self.numbers_black = self.load_sprite_range(gs.NUMBERS_BLACK,
+                                                   self.sprite_sheet,
+                                                   row=16,
+                                                   col=16,
+                                                   width=16,
+                                                   height=16,
+                                                   resize=True,
+                                                   apply_colorkey=True)
+        self.numbers_white = self.load_sprite_range(gs.NUMBERS_WHITE,
+                                                   self.sprite_sheet,
+                                                   row=16,
+                                                   col=16,
+                                                   width=16,
+                                                   height=16,
+                                                   resize=True,
+                                                   apply_colorkey=True)
+        self.score_images = self.load_sprite_range(gs.SCORE_IMAGES,
+                                                  self.sprite_sheet,
+                                                  row=16,
+                                                  col=16,
+                                                  width=16,
+                                                  height=16,   
+                                                  resize=True,
+                                                  apply_colorkey=True)
 
         #This is from gemini as a test
         # --- ADD THIS CODE BELOW ---

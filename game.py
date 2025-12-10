@@ -4,6 +4,7 @@ from character import Character
 from enemy import Enemy
 from blocks import Hard_block, Soft_Block, Special_Soft_Block
 from random import choice, randint
+from info_panel import InfoPanel
 from specials import Special
 import gamesetting as gs
 
@@ -80,12 +81,15 @@ class Game:
     self.level = 1
     self.level_special = self.select_a_special()
     self.level_matrix = self.generate_level_matrix(gs.ROWS, gs.COLS)
+    self.level_info = InfoPanel(self, self.ASSETS)
 
   def input(self, events):
     # Expect an events list forwarded from main
     self.PLAYER.input(events)
     
   def update(self):
+    # Update info panel 
+    self.level_info.update()
     # self.hard_blocks.update()
     # self.soft_block.update()
     # self.PLAYER.update()
@@ -180,8 +184,11 @@ class Game:
     #                 (col_num * gs.SIZE, (row_num * gs.SIZE) + gs.Y_OFFSET))
 
     #Fill the background entirely
-    window.fill(gs.PURPLEISH)
+    window.fill(gs.DARK_RED)
     #This is from gemini as a test
+
+    # Draw information panel to screen
+    self.level_info.draw(window)
 
     # Apply camera offsets to background tiles
     # Use integer offsets for drawing to prevent half-pixel tile cutoffs
