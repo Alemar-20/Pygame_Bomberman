@@ -213,6 +213,7 @@ class Assets:
         self.stage_word = pygame.transform.scale(stage_word_sprite, (300, 64))  #320
         self.stage_word.set_colorkey(gs.BLACK)
 
+        self.sounds = self.load_sound_effect()
 
 
 
@@ -280,3 +281,9 @@ class Assets:
             image = pygame.transform.rotate(images, rotation)
             image.set_colorkey(gs.BLACK)
             image_list[ind] = image
+
+    def load_sound_effect(self):
+        sound_files = {}
+        for sound in gs.SOUNDS:
+            sound_files[sound] = pygame.mixer.Sound(f"sounds/{sound}")
+        return sound_files    

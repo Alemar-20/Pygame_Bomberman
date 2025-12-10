@@ -39,6 +39,7 @@ class Bomberman:
     """
     # 1. Initialize Pygame modules (MUST be done first before any display operations)
     pygame.init()
+    pygame.mixer.init()  # Initialize sound mixer
     
     # 2. Set up the display window (the 'screen')
     #    Use the configured size but clamp to the current display so it fits on any device.

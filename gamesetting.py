@@ -210,3 +210,17 @@ SCORES = {"ballom": 100,
            }
 
 STAGE_WORD = {"stage_word": [(14,0)]}
+SOUNDS = ["Bomberman SFX (1).wav",
+          "Bomberman SFX (2).wav",
+          "Bomberman SFX (3).wav",
+          "Bomberman SFX (4).wav",
+          "Bomberman SFX (5).wav",
+          "Bomberman SFX (6).wav",
+          "Bomberman SFX (7).wav",
+          "BM - 01 Title Screen.mp3",
+          "BM - 02 Stage Start.mp3",
+          "BM - 03 Main BGM.mp3",
+          "BM - 04 Power-Up Get.mp3",
+          "BM - 05 Stage Clear.mp3",
+          "BM - 07 Special Power-Up Get.mp3",
+          "BM - 09  Miss.mp3"]

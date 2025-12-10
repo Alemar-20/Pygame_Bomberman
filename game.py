@@ -95,6 +95,14 @@ class Game:
     self.point_pos = 0
     self.pointer_pos = self.point_position[self.point_pos]
 
+    self.music_playing = False
+    self.start_screen_music = self.ASSETS.sounds["BM - 01 Title Screen.mp3"]
+    self.bg_music = self.ASSETS.sounds["BM - 03 Main BGM.mp3"]
+    self.bg_music_special = self.ASSETS.sounds["BM - 04 Power-Up Get.mp3"]
+    self.stage_ending_music = self.ASSETS.sounds["BM - 05 Stage Clear.mp3"]
+
+    self.start_screen_music.play(loops=-1)
+
   def input(self, events):
     # Expect an events list forwarded from main
     if not self.game_on:
@@ -125,9 +133,24 @@ class Game:
   def update(self):
     if not self.game_on:
       return
+      
     
     if self.transition:
       self.level_transition.update()
+      return
+    
+    if self.game_on == True \
+        and self.transition == False \
+        and self.music_playing == False \
+        and len(self.groups["enemies"].sprites()) > 0:
+      self.music_playing = True
+      self.bg_music.play(loops=-1)
+
+    if len(self.groups["enemies"].sprites()) == 0 and self.music_playing == True:
+      self.music_playing = False
+      self.bg_music.stop()
+      #self.bg_music_special.stop()
+      self.stage_ending_music.play()
     
     # Update info panel 
     self.level_info.update()
@@ -489,6 +512,7 @@ class Game:
     self.level_info = InfoPanel(self, self.ASSETS)     
 
     self.level_transition = LevelTransition(self, self.ASSETS, self.level)
+    self.start_screen_music.stop()
 
 class LevelTransition(pygame.sprite.Sprite):
   def __init__(self, game, assets, stage_num):
@@ -509,6 +533,7 @@ class LevelTransition(pygame.sprite.Sprite):
     self.rect = self.image.get_rect(topleft=(self.xpos, self.ypos))
 
     self.stage_num_img = self.generate_stage_number_image()
+    self.ASSETS.sounds["BM - 02 Stage Start.mp3"].play()
 
   def generate_stage_number_image(self):
     """ Generate the image for the stage number"""
