@@ -44,7 +44,7 @@ class Special(pygame.sprite.Sprite):
          if self.name == "exit":
             self.GAME.bg_music.stop()
             self.GAME.bg_music_special.stop()
-            self.GAME.PLAYER.update_score(self.score)
+            #self.GAME.PLAYER.update_score(self.score)
             return
          self.GAME.level_matrix[self.row][self.col] = "_"
          self.GAME.ASSETS.sounds["Bomberman SFX (4).wav"].play()
@@ -93,6 +93,7 @@ class Special(pygame.sprite.Sprite):
      if len(self.GAME.groups["enemies"].sprites()) > 0:
         return
      
+     player.update_score(self.score)
      self.GAME.new_stage()
 
   def hit_by_explosion(self):

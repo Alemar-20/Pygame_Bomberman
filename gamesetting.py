@@ -61,7 +61,7 @@ ENEMIES = {
 # ============================================================================
 # Original sprite dimensions from the sprite sheet
 SPRITE_WIDTH = 32    # Width of each sprite frame in pixels
-SPRITE_HEIGHT = 32   # Height of each sprite frame in pixels
+SPRITE_HEIGHT = 32   # Height of each sprite frame in pixels``
 
 # Tile dimensions for background tiles
 TILE_WIDTH = 32      # Width of background tile in pixels

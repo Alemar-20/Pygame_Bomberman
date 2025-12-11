@@ -521,10 +521,6 @@ class Game:
     self.level_transition = LevelTransition(self, self.ASSETS, self.level)
     self.start_screen_music.stop()
 
-  # ORIGINAL CODE (INCORRECT)
-  # score_image = [self.ASSETS.numbers_white[int(image)]][0] for image in score]
-  # The bracket placement is wrong - [list][0] for item in ... is invalid syntax
-
   def check_top_score(self, player_score):
 
     if player_score > self.top_score:

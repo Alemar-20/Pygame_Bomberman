@@ -63,8 +63,8 @@ class Enemy(pygame.sprite.Sprite):
     """Render enemy sprite with camera offsets applied to both axes."""
     window.blit(self.image, (int(self.x) - int(x_offset), int(self.y) - int(y_offset)))
     # Line of sight debug visualization (disabled)
-    # pygame.draw.line(window, "black", (self.start_pos[0] - x_offset, self.start_pos[1] - y_offset),
-    #                  (self.end_pos[0] - x_offset, self.end_pos[1] - y_offset), 2)
+    #pygame.draw.line(window, "black", (self.start_pos[0] - x_offset, self.start_pos[1] - y_offset),
+                      #(self.end_pos[0] - x_offset, self.end_pos[1] - y_offset), 2)
 
   def movement(self):
     """Method that incorporate all movement conditions to enable
