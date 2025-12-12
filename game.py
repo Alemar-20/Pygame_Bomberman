@@ -56,33 +56,6 @@ class Game:
       "scores": pygame.sprite.Group()          # Score indicators
     }
     
-    # Create player character at starting position (grid: row 3, col 2)
-    #self.PLAYER = Character(self, self.ASSETS.player_char, self.groups["player"], 3, 2, gs.SIZE)
-    
-
-    # CAMERA SYSTEM - Smooth following with deadzone
-    # Current camera offsets (in pixels) - what's actually rendered
-    #self.x_camera_offset = 0
-    #self.y_camera_offset = 0
-    
-    # Target camera offsets - where camera wants to be
-    #self.cam_target_x = 0
-    #self.cam_target_y = 0
-    
-    # Camera lerp: how quickly camera follows (0.14 = smooth, slower follow)
-    # Lower values = smoother, slower follow. Higher values = snappier, more direct follow
-    #self.camera_lerp = 0.14
-    
-    # Deadzone ratio: Fraction of screen where player can move without camera moving
-    # 0.6 = 60% of screen (centered) is the deadzone
-    # Camera only moves when player leaves this central area
-    #self.deadzone_ratio = 0.6
-    
-    # LEVEL INFORMATION
-    # self.level = 1
-    # self.level_special = self.select_a_special()
-    # self.level_matrix = self.generate_level_matrix(gs.ROWS, gs.COLS)
-    # self.level_info = InfoPanel(self, self.ASSETS)
     
     # Level Transition
     self.transition = False
@@ -91,7 +64,7 @@ class Game:
 
     # Game on settings
     self.game_on =False
-    self.point_position = [(465, 500),(465, 543),(465, 607)]
+    self.point_position = [(465, 500),(465, 543),(465, 607)]  # Menu pointer positions #[(465, 500),(465, 543),(465, 607)]
     self.point_pos = 0
     self.pointer_pos = self.point_position[self.point_pos]
 
@@ -127,7 +100,6 @@ class Game:
               if self.point_pos == 0:
                 self.new_game()
 
-
        return     
            
     self.PLAYER.input(events)
@@ -135,8 +107,7 @@ class Game:
   def update(self):
     if not self.game_on:
       return
-      
-    
+          
     if self.transition:
       self.level_transition.update()
       return
@@ -175,8 +146,6 @@ class Game:
            for enemy in enemies:
              if pygame.sprite.collide_mask(flame,enemy):
                enemy.destroy()
-
-
 
     # Smoothly interpolate camera current offsets toward target offsets
     dx = self.cam_target_x - self.x_camera_offset
@@ -280,10 +249,6 @@ class Game:
                     ((col_num * gs.SIZE) - cam_x, (row_num * gs.SIZE) + gs.Y_OFFSET - cam_y))                
 
 
-    # self.hard_blocks.draw(window)
-    # self.soft_block.draw(window)
-    # self.PLAYER.draw(window)
-    # Draw all sprite groups, passing the camera offsets so sprites shift properly
     for value in self.groups.values():
       for item in value:
         # Prefer the 2-arg (x,y) draw signature; fall back for compatibility

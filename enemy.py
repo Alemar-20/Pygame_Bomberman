@@ -10,8 +10,6 @@ class Enemy(pygame.sprite.Sprite):
     # Type of enemy (Attribute for enemy depend on the type)
     self.type = type
 
-
-
     # Attributes (dependent on our enemy type)
     self.speed = gs.ENEMIES[self.type]["speed"]            # Speed of the enemy
     self.wall_hack = gs.ENEMIES[self.type]["wall_hack"]       # Enemy can move through walls 

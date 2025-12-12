@@ -130,11 +130,7 @@ class Soft_Block(Blocks):
 
         self.destroyed = False
         
-
-
-  def update(self):
-    # if self.destroyed:
-    #   if pygame.time.get_ticks() -       
+  def update(self):     
     if self.destroyed:
       if pygame.time.get_ticks() - self.anim_timer > self.anim_frame_time:
         self.image_index += 1
@@ -172,7 +168,6 @@ class Soft_Block(Blocks):
       self.destroyed = True
       self.GAME.level_matrix[self.row][self.col] = "_"
       
-
   def __repr__(self):
     return "'@'"
 

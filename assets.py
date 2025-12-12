@@ -5,8 +5,7 @@ import gamesetting as gs
 
 class Assets:
     def __init__(self):
-        # DO NOT SCALE the sprite sheet if it's already the correct size (325x257)
-        # Assuming "owncreation.png" is the 325x257 image
+
         self.sprite_sheet = self.load_sprite_sheet("images", "owncreation.png") # Removed hardcoded size | THIS IS FOR CHARACTER
         self.player_char = self.load_sprite_range(
             gs.PLAYER, 
@@ -216,10 +215,6 @@ class Assets:
         self.sounds = self.load_sound_effect()
 
 
-
-
-        #This is from gemini as a test
-        # --- ADD THIS CODE BELOW ---
         # Create a Green Background Block manually
         bg_surface = pygame.Surface((gs.SIZE, gs.SIZE))
         bg_surface.fill(gs.YELLOWISH) # Fills the square with Green color
@@ -236,8 +231,6 @@ class Assets:
         """Load individual sprites from a sprite sheet."""
         # CREATE AN EMPTY SURFACE
         image = pygame.Surface((width, height), pygame.SRCALPHA)
-        # Fill the surface with a off color
-        #image.fill((0, 0, 1))
         # BLIT THE SPRITE SHEET ONTO THE NEW SURFACE
         image.blit(spritesheet, (0, 0), (xcoord, ycoord, width, height))
         # CONVERT BLACK COLOURS ON THE NEW IMAGE TO TRANSPARENT
