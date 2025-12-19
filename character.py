@@ -151,18 +151,13 @@ class Character(pygame.sprite.Sprite):
     def draw(self, window, x_offset=0, y_offset=0):
         if self.death_sound_play == False and self.delay == False:       
          window.blit(self.image, (int(self.x) - int(x_offset), int(self.y) - int(y_offset)))
-        #pygame.draw.rect(window, gs.RED, self.rect, 1)
-
-        # Optional: Uncomment to see the red hitbox for debugging
-        # debug_rect = self.rect.copy()
-        # debug_rect.x -= offset
-        # pygame.draw.rect(window, gs.RED, debug_rect, 1)
+        #pygame.draw.rect(window, gs.RED, self.rect, 1) Uncomment for hitbox debugging
 
         # # Draw the hitbox with camera offset applied (for debugging)
         debug_rect = self.rect.copy()
         debug_rect.x -= int(x_offset)
         debug_rect.y -= int(y_offset)
-        #pygame.draw.rect(window, gs.RED, debug_rect, 2)  # Red box, 2px thick
+
 
     def animate(self, action):
         """
@@ -208,9 +203,7 @@ class Character(pygame.sprite.Sprite):
                     self.delay = True
                     self.delay_timer = pygame.time.get_ticks()
                     return
-                    #self.reset_player()
 
-            #self.index = self.index % len(self.image_dict[action])
             self.image = self.image_dict[action][self.index]
             self.anim_time_set = pygame.time.get_ticks()
 
@@ -254,9 +247,6 @@ class Character(pygame.sprite.Sprite):
 
         # 2. Check each block to see if it is passable
         for block in all_hits:
-
-            # if block in bomb_hits and hasattr(self, "bomb_hack") and self.bomb_hack:
-            #     continue
 
             if hasattr(block, 'passable') and block.passable == False:
                 return True  # We hit a solid wall!

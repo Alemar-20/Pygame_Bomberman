@@ -149,16 +149,6 @@ class Soft_Block(Blocks):
            if pygame.sprite.collide_mask(self,self.GAME.PLAYER):
               self.GAME.PLAYER.action = "dead_anim"
               self.GAME.PLAYER.alive = False          
-      # for enemy in self.GAME.groups["enemies"]:
-      #     if enemy.destroyed:
-      #        continue
-      #     if not self.rect.colliderect(enemy):
-      #         continue
-      #     if pygame.sprite.collide_mask(self,enemy):
-      #            enemy.destroy()
-      # if not self.rect.colliderect(self.GAME.PLAYER):
-      #      if pygame.sprite.collide_mask(self,self.GAME.PLAYER):
-      #         self.GAME.PLAYER.action = "dead_anim"
 
 
   def destroy_soft_block(self):
@@ -168,6 +158,7 @@ class Soft_Block(Blocks):
       self.destroyed = True
       self.GAME.level_matrix[self.row][self.col] = "_"
       
+
   def __repr__(self):
     return "'@'"
 
@@ -175,7 +166,7 @@ class Special_Soft_Block(Soft_Block):
   def __init__(self, game, images, group, row_num, col_num, special_type):
     super().__init__(game, images, group, row_num, col_num) 
 
-    self.special_type = special_type  # For now, only invisibility special
+    self.special_type = special_type 
     print((self.row, self.col))
 
   def kill(self):

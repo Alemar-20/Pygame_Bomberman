@@ -23,7 +23,7 @@ class Assets:
             self.sprite_sheet, 
             row=gs.TILE_HEIGHT, 
             col=gs.TILE_WIDTH, 
-            width=gs.TILE_WIDTH, #may - 1 to 
+            width=gs.TILE_WIDTH,  
             height=gs.TILE_HEIGHT,
             resize=True            
         )
@@ -34,7 +34,7 @@ class Assets:
             self.sprite_sheet, # Use the same sprite sheet
             row=gs.TILE_HEIGHT, 
             col=gs.TILE_WIDTH, 
-            width=gs.TILE_WIDTH, #may - 1 din
+            width=gs.TILE_WIDTH,
             height=gs.TILE_HEIGHT,
             resize=True            
         )
@@ -45,7 +45,7 @@ class Assets:
             self.sprite_sheet, # Use the same sprite sheet
             row=gs.TILE_HEIGHT, 
             col=gs.TILE_WIDTH, 
-            width=gs.TILE_WIDTH , #may - 1 din
+            width=gs.TILE_WIDTH ,
             height=gs.TILE_HEIGHT,
             resize=True            
         )
@@ -222,7 +222,7 @@ class Assets:
         # Save it so game.py can find it
         self.background = {"background": [bg_surface]}
 
-    def load_sprite_sheet(self, path, file_name): # Removed width, height arguments
+    def load_sprite_sheet(self, path, file_name):
         """Load a sprite sheet.""" 
         image = pygame.image.load(f"{path}/{file_name}").convert_alpha()
         return image
@@ -234,7 +234,6 @@ class Assets:
         # BLIT THE SPRITE SHEET ONTO THE NEW SURFACE
         image.blit(spritesheet, (0, 0), (xcoord, ycoord, width, height))
         # CONVERT BLACK COLOURS ON THE NEW IMAGE TO TRANSPARENT
-        # NOTE: Don't set colorkey here - it will be lost when image is scaled
         # It will be applied in load_sprite_range() AFTER scaling
         return image
     

@@ -212,11 +212,6 @@ class Game:
     self.cam_target_y = float(round(desired_y))
 
   def draw(self,window):
-    #Draw the Green Background squares
-    # for row_num, row in enumerate(self.level_matrix): 
-    #   for col_num, in enumerate(row):
-    #     window.blit(self.ASSETS.background["background"][0],
-    #                 (col_num * gs.SIZE, (row_num * gs.SIZE) + gs.Y_OFFSET))
 
     #Fill the background entirely
     window.fill(gs.DARK_RED)
@@ -537,7 +532,7 @@ class LevelTransition(pygame.sprite.Sprite):
 
     self.stage_num = stage_num
     
-    self.time = 2800
+    self.time = 2800 # Transition time in milliseconds
     self.timer = pygame.time.get_ticks()
 
     self.image = self.ASSETS.stage_word

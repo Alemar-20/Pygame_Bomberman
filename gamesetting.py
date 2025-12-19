@@ -1,20 +1,6 @@
 # ============================================================================
 # FILE: gamesetting.py - GLOBAL GAME CONFIGURATION AND CONSTANTS
 # ============================================================================
-# PURPOSE:
-#   Centralized configuration file containing all game constants, settings,
-#   and sprite coordinate mappings. This file serves as a single source of
-#   truth for:
-#   - Display settings (resolution, FPS)
-#   - Game mechanics (level size, timer, enemy attributes)
-#   - Color palette
-#   - Sprite sheet coordinates for all game entities
-#   - Score values and sound file names
-#
-# USAGE:
-#   Import as: import gamesetting as gs
-#   Access values like: gs.SCREENWIDTH, gs.FPS, gs.PLAYER, etc.
-# ============================================================================
 
 # ============================================================================
 # DISPLAY SETTINGS
