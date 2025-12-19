@@ -3,8 +3,8 @@
  False,
  False,
  False,
- 'c:\\Users\\Alemar\\Documents\\BSIT 2ND '
- 'YEAR\\OOP\\Pygame_Bomberman\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\images\\icon-windowed.ico',
+ ['C:\\Users\\Alemar\\Documents\\BSIT 2ND '
+  'YEAR\\OOP\\Pygame_Bomberman\\icon.ico'],
  None,
  False,
  False,
@@ -531,7 +531,7 @@
  [],
  False,
  False,
- 1766183757,
+ 1766184796,
  [('runw.exe',
    'c:\\Users\\Alemar\\Documents\\BSIT 2ND '
    'YEAR\\OOP\\Pygame_Bomberman\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',
